@@ -11,6 +11,7 @@ function(BuildCrossProject)
 			CONFIGURE_COMMAND
 			BUILD_COMMAND
 			INSTALL_COMMAND
+			DEPENDS
 		)
 
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -24,17 +25,15 @@ function(BuildCrossProject)
 		endif()
 
 		if (ARG_DOWNLOAD_NAME)
-				set(DL_CMD "")
+				set(DL_CMD echo "Source already downloaded, continuing...")
 				set(SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/tarballs/${ARG_DOWNLOAD_NAME}-${ARG_PROJ_VERSION})
 		else()
 				set(DL_CMD wget ${ARG_URL}/${PROJ_FULL}.tar.gz -q --show-progress && tar -xzf ${PROJ_FULL}.tar.gz)
 				set(SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/tarballs/${PROJ_FULL})
 		endif()
 
-	message("${ARG_PATCH}")
-
-
 		ExternalProject_Add(${ARG_PROJ}
+			DEPENDS ${ARG_DEPENDS}
 			STAMP_DIR ${ARG_PROJ}/stamps
 			TMP_DIR ${ARG_PROJ}/tmp
 	    DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/tarballs
