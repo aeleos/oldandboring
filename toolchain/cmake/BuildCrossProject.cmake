@@ -25,7 +25,7 @@ function(BuildCrossProject)
 		endif()
 
 		if (ARG_DOWNLOAD_NAME)
-				set(DL_CMD echo "Source already downloaded, continuing...")
+				set(DL_CMD echo "Source already downloaded, continu")
 				set(SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/tarballs/${ARG_DOWNLOAD_NAME}-${ARG_PROJ_VERSION})
 		else()
 				set(DL_CMD wget ${ARG_URL}/${PROJ_FULL}.tar.gz -q --show-progress && tar -xzf ${PROJ_FULL}.tar.gz)
