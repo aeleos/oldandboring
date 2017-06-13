@@ -14,46 +14,45 @@ endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT W
 
 
 set(SYS_TARGET "i686-pc-boring")
+set(ELF_TARGET "i686-elf")
+
+set(HDD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../hdd)
 
 GET_DATE()
 
+set(TIME_STAMP "${GD_MONTH}-${GD_DAY}-${GD_YEAR}_${GD_HOUR}:${GD_MINUTE}:${GD_SECOND}")
 
-# set(TIME_STAMP "${GD_YEAR}-${GD_MONTH}-${GD_DAY}_${GD_HOUR}-${GD_MINUTE}-${GD_SECOND}")
-#
-#
-# file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/log/build_log-${TIME_STAMP}")
-#
-# set(LOG_DIR "${CMAKE_BINARY_DIR}/log/build_log-${TIME_STAMP}")
-#
-# set(BINUTILS_CONFIGURE_LOG_FILE ${LOG_DIR}/binutils-configure.log)
-# set(BINUTILS_BUILD_LOG_FILE ${LOG_DIR}/binutils-build.log)
-# set(BINUTILS_INSTALL_LOG_FILE ${LOG_DIR}/binutils-install.log)
-# set(BINUTILS_ELF_CONFIGURE_LOG_FILE ${LOG_DIR}/binutils-elf-configure.log)
-# set(BINUTILS_ELF_BUILD_LOG_FILE ${LOG_DIR}/binutils-elf-build.log)
-# set(BINUTILS_ELF_INSTALL_LOG_FILE ${LOG_DIR}/binutils-elf-install.log)
-# set(GCC_CONFIGURE_LOG_FILE ${LOG_DIR}/gcc-configure.log)
-# set(GCC_BUILD_LOG_FILE ${LOG_DIR}/gcc-build.log)
-# set(GCC_INSTALL_LOG_FILE ${LOG_DIR}/gcc-install.log)
-# set(GCC_ELF_CONFIGURE_LOG_FILE ${LOG_DIR}/gcc-elf-configure.log)
-# set(GCC_ELF_BUILD_LOG_FILE ${LOG_DIR}/gcc-elf-build.log)
-# set(GCC_ELF_INSTALL_LOG_FILE ${LOG_DIR}/gcc-elf-install.log)
-# set(NEWLIB_CONFIGURE_LOG_FILE ${LOG_DIR}/newlib-configure.log)
-# set(NEWLIB_BUILD_LOG_FILE ${LOG_DIR}/newlib-build.log)
-# set(NEWLIB_INSTALL_LOG_FILE ${LOG_DIR}/newlib-install.log)
-# set(LIBSTDCPP_CONFIGURE_LOG_FILE ${LOG_DIR}/libstdcpp-configure.log)
-# set(LIBSTDCPP_BUILD_LOG_FILE ${LOG_DIR}/libstdcpp-build.log)
-# set(LIBSTDCPP_INSTALL_LOG_FILE ${LOG_DIR}/libstdcpp-install.log)
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/log/build_log-${TIME_STAMP}")
 
-message($ENV{PATH})
+set(LOG_DIR "${CMAKE_BINARY_DIR}/log/build_log-${TIME_STAMP}")
+
+set(BINUTILS_CONFIGURE_LOG_FILE ${LOG_DIR}/binutils-configure.log)
+set(BINUTILS_BUILD_LOG_FILE ${LOG_DIR}/binutils-build.log)
+set(BINUTILS_INSTALL_LOG_FILE ${LOG_DIR}/binutils-install.log)
+set(BINUTILS_ELF_CONFIGURE_LOG_FILE ${LOG_DIR}/binutils-elf-configure.log)
+set(BINUTILS_ELF_BUILD_LOG_FILE ${LOG_DIR}/binutils-elf-build.log)
+set(BINUTILS_ELF_INSTALL_LOG_FILE ${LOG_DIR}/binutils-elf-install.log)
+set(GCC_CONFIGURE_LOG_FILE ${LOG_DIR}/gcc-configure.log)
+set(GCC_BUILD_LOG_FILE ${LOG_DIR}/gcc-build.log)
+set(GCC_INSTALL_LOG_FILE ${LOG_DIR}/gcc-install.log)
+set(GCC_ELF_CONFIGURE_LOG_FILE ${LOG_DIR}/gcc-elf-configure.log)
+set(GCC_ELF_BUILD_LOG_FILE ${LOG_DIR}/gcc-elf-build.log)
+set(GCC_ELF_INSTALL_LOG_FILE ${LOG_DIR}/gcc-elf-install.log)
+set(NEWLIB_CONFIGURE_LOG_FILE ${LOG_DIR}/newlib-configure.log)
+set(NEWLIB_BUILD_LOG_FILE ${LOG_DIR}/newlib-build.log)
+set(NEWLIB_INSTALL_LOG_FILE ${LOG_DIR}/newlib-install.log)
+set(LIBSTDCPP_CONFIGURE_LOG_FILE ${LOG_DIR}/libstdcpp-configure.log)
+set(LIBSTDCPP_BUILD_LOG_FILE ${LOG_DIR}/libstdcpp-build.log)
+set(LIBSTDCPP_INSTALL_LOG_FILE ${LOG_DIR}/libstdcpp-install.log)
 
 BuildCrossProject(
 	PATCH
 	PROJ binutils
 	PROJ_VERSION 2.27
 	URL http://ftp.gnu.org/gnu/binutils/
-	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=<INSTALL_DIR> --with-sysroot=${CMAKE_CURRENT_SOURCE_DIR}/hdd --disable-werror > /dev/null 2>&1
-	BUILD_COMMAND make -j8 > /dev/null 2>&1
-	INSTALL_COMMAND make install > /dev/null 2>&1
+	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=<INSTALL_DIR> --with-sysroot=${HDD_DIR} --disable-werror > ${BINUTILS_CONFIGURE_LOG_FILE} 2>&1
+	BUILD_COMMAND make -j8 > ${BINUTILS_BUILD_LOG_FILE} 2>&1
+	INSTALL_COMMAND make install > ${BINUTILS_INSTALL_LOG_FILE} 2>&1
 )
 
 BuildCrossProject(
@@ -61,9 +60,9 @@ BuildCrossProject(
 	DEPENDS binutils
 	DOWNLOAD_NAME binutils
 	PROJ_VERSION 2.27
-	CONFIGURE_COMMAND configure --target=i686-elf --prefix=<INSTALL_DIR> --disable-werror > /dev/null 2>&1
-	BUILD_COMMAND make -j8 > /dev/null 2>&1
-	INSTALL_COMMAND make install > /dev/null 2>&1
+	CONFIGURE_COMMAND configure --target=${ELF_TARGET} --prefix=<INSTALL_DIR> --disable-werror > ${BINUTILS_ELF_CONFIGURE_LOG_FILE} 2>&1
+	BUILD_COMMAND make -j8 > ${BINUTILS_ELF_BUILD_LOG_FILE} 2>&1
+	INSTALL_COMMAND make install > ${BINUTILS_ELF_INSTALL_LOG_FILE} 2>&1
 )
 
 BuildCrossProject(
@@ -72,9 +71,9 @@ BuildCrossProject(
 	DEPENDS binutils binutils-elf
 	PROJ_VERSION 6.3.0
 	URL http://www.netgull.com/gcc/releases/gcc-6.3.0
-	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=<INSTALL_DIR> --with-sysroot=${CMAKE_CURRENT_SOURCE_DIR}/hdd --disable-nls --enable-languages=c,c++,go --disable-libssp --with-newlib > /dev/null 2>&1
-	BUILD_COMMAND make -j8 all-gcc all-target-libgcc > /dev/null 2>&1
-	INSTALL_COMMAND make install-gcc install-target-libgcc > /dev/null 2>&1
+	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=<INSTALL_DIR> --with-sysroot=${HDD_DIR} --disable-nls --enable-languages=c,c++,go --disable-libssp --with-newlib > ${GCC_CONFIGURE_LOG_FILE} 2>&1
+	BUILD_COMMAND make -j8 all-gcc all-target-libgcc > ${GCC_BUILD_LOG_FILE} 2>&1
+	INSTALL_COMMAND make install-gcc install-target-libgcc > ${GCC_INSTALL_LOG_FILE} 2>&1
 )
 
 BuildCrossProject(
@@ -82,9 +81,9 @@ BuildCrossProject(
 	DEPENDS binutils binutils-elf gcc
 	DOWNLOAD_NAME gcc
 	PROJ_VERSION 6.3.0
-	CONFIGURE_COMMAND configure --target=i686-elf --prefix=<INSTALL_DIR> --disable-nls --enable-languages=c --disable-libssp --without-headers > /dev/null 2>&1
-	BUILD_COMMAND make -j8 all-gcc all-target-libgcc > /dev/null 2>&1
-	INSTALL_COMMAND make install-gcc install-target-libgcc > /dev/null 2>&1
+	CONFIGURE_COMMAND configure --target=${ELF_TARGET} --prefix=<INSTALL_DIR> --disable-nls --enable-languages=c --disable-libssp --without-headers > ${GCC_ELF_CONFIGURE_LOG_FILE} 2>&1
+	BUILD_COMMAND make -j8 all-gcc all-target-libgcc > ${GCC_ELF_BUILD_LOG_FILE} 2>&1
+	INSTALL_COMMAND make install-gcc install-target-libgcc > ${GCC_ELF_INSTALL_LOG_FILE} 2>&1
 )
 
 BuildCrossProject(
@@ -93,9 +92,9 @@ BuildCrossProject(
 	DEPENDS gcc-elf
 	PROJ_VERSION 1.19.0
 	URL http://b.dakko.us/~klange/mirrors
-	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=/usr --enable-newlib-io-c99-formats > /dev/null 2>&1
-	BUILD_COMMAND make -j8 > /dev/null 2>&1
-	INSTALL_COMMAND make DESTDIR=${CMAKE_CURRENT_SOURCE_DIR}/hdd install > /dev/null 2>&1
+	CONFIGURE_COMMAND configure --target=${SYS_TARGET} --prefix=/usr --enable-newlib-io-c99-formats > ${NEWLIB_CONFIGURE_LOG_FILE} 2>&1
+	BUILD_COMMAND make -j8 > ${NEWLIB_BUILD_LOG_FILE} 2>&1
+	INSTALL_COMMAND make DESTDIR=${HDD_DIR} install > ${NEWLIB_INSTALL_LOG_FILE} 2>&1
 )
 
 
@@ -159,17 +158,17 @@ ExternalProject_Add_Step(newlib makefile-fix
 
 ExternalProject_Add_Step(newlib post-install
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/newlib
-	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/pwd.h ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/include/pwd.h
-	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/syscall.h ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/include/syscall.h
-	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/syscall_nums.h ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/include/syscall_nums.h
-	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crt0.o ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/lib/
-	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crti.o ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/lib/
-	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crtn.o ${CMAKE_CURRENT_SOURCE_DIR}/hdd/usr/lib/
+	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/pwd.h ${HDD_DIR}/usr/include/pwd.h
+	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/syscall.h ${HDD_DIR}/usr/include/syscall.h
+	COMMAND cp -r ${NEWLIB_PATCH_DIR}/include/syscall_nums.h ${HDD_DIR}/usr/include/syscall_nums.h
+	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crt0.o ${HDD_DIR}/usr/lib/
+	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crti.o ${HDD_DIR}/usr/lib/
+	COMMAND cp ${SYS_TARGET}/newlib/libc/sys/crtn.o ${HDD_DIR}/usr/lib/
 	DEPENDEES install)
 
 
 ExternalProject_Add_Step(newlib build-libstdc++
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/newlib
-	COMMAND make all-target-libstdc++-v3 > /dev/null 2>&1
-	COMMAND make install-target-libstdc++-v3 > /dev/null 2>&1
+	COMMAND make all-target-libstdc++-v3 > ${LIBSTDCPP_BUILD_LOG_FILE} 2>&1
+	COMMAND make install-target-libstdc++-v3 > ${LIBSTDCPP_INSTALL_LOG_FILE} 2>&1
 	DEPENDEES post-install)
