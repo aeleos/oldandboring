@@ -85,3 +85,12 @@ hdd/usr/share/fontconfig
 hdd/usr/share/xml
 hdd/usr/python
 hdd/usr/gcc
+
+# iso dir
+
+*.img
+/util/*.img
+/util/*.vmdk
+/util/*.vdi
+/util/boot/boringos-kernel
+/util/bin/

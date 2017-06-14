@@ -1,6 +1,12 @@
 #!/bin/bash
 
-export PATH="$PWD/local/bin:$PATH"
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+export PATH="$DIR/local/bin:$PATH"
+export TOOLCHAIN="$DIR/../../hdd/usr"
+
 #echo '$0 = ' $0
 
 
