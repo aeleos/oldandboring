@@ -18,6 +18,9 @@ function build_toolchain() {
 }
 
 function build_kernel() {
+  if [ ! -d kernel/build ]; then
+    mkdir kernel/build
+  fi
   pushd kernel/build
     cmake ..
     make install

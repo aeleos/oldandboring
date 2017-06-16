@@ -15,7 +15,7 @@ echo "I am going to install some system packages. I will probably need you to pr
 echo "If you don't want to do this and you're sure you have all of the required system packages, then interrupt the password prompt and run this script again with -q."
 
 if [ -f /etc/debian_version ]; then
-    sudo apt-get install yasm genext2fs build-essential wget libmpfr-dev libmpc-dev libgmp3-dev qemu autoconf automake texinfo pkg-config git ctags gperf grub-pc-bin
+    sudo apt-get install yasm genext2fs build-essential wget libmpfr-dev libmpc-dev libgmp3-dev qemu autoconf automake texinfo pkg-config git ctags gperf grub-pc-bin xorriso
 elif [ -f /etc/fedora-release ]; then
     sudo dnf groupinstall 'Development Tools'
     sudo dnf groupinstall 'Development Libraries'
