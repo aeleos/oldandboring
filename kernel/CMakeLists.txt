@@ -30,11 +30,11 @@ include(cmake/load_arch.cmake)
 
 load_arch("x86")
 
-message("${ARCH_C_FLAGS}")
-message("${ARCH_ASM_FLAGS}")
-message("${ARCH_LINKER_FLAGS}")
-message("${ARCH_LINKER}")
-message("${ARCH_SRCS}")
+# message("${ARCH_C_FLAGS}")
+# message("${ARCH_ASM_FLAGS}")
+# message("${ARCH_LINKER_FLAGS}")
+# message("${ARCH_LINKER}")
+# message("${ARCH_SRCS}")
 
 # Now set up our environment
 add_executable(boringos-kernel "${ARCH_SRCS}")
