@@ -11,7 +11,7 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "$PATH"
+#echo "$PATH"
 
 function build_toolchain() {
   echo ""
@@ -22,15 +22,20 @@ function build_kernel() {
     mkdir kernel/build
   fi
   pushd kernel/build
-    cmake ..
-    make install
+    if [ -n "$FLAG_D" ]; then
+      cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. || bail
+    else
+      cmake .. || bail
+    fi
+    make install || bail
   popd
 }
 
-while getopts 'hfr' flag; do
+while getopts 'hfrd' flag; do
   case "${flag}" in
     r) FLAG_R='true' ;;
     f) FLAG_F='true' ;;
+    d) FLAG_D='true' ;;
     h|\?)
       print_build_help
       exit 0
@@ -53,7 +58,7 @@ if [ -n "$FLAG_R" ]; then
   if [ -n "$FLAG_F" ]; then
     rm -r $DIR/toolchain/build
     mkdir $DIR/toolchain/build
-    build_toolchain
+    build_toolchain || bail
   fi
   echo "HERE"
   rm -r $DIR/kernel/build

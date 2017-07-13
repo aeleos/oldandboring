@@ -8,6 +8,7 @@ SET(CMAKE_SYSTEM_NAME Generic)
 # specify the cross compiler
 CMAKE_FORCE_C_COMPILER(i686-elf-gcc GNU)
 CMAKE_FORCE_CXX_COMPILER(i686-elf-cpp GNU)
+# CMAKE_ASM_COMPILER(nasm)
 
 project(BoringOS)
 
@@ -37,11 +38,15 @@ load_arch("x86")
 # message("${ARCH_SRCS}")
 
 # Now set up our environment
-add_executable(boringos-kernel "${ARCH_SRCS}")
+file(GLOB KERNEL_SRCS "*.c" "*.S")
+
+add_executable(boringos-kernel "${ARCH_SRCS}" "${KERNEL_SRCS}")
 
 set(CMAKE_ASM-ATT_COMPILE_OBJECT "<CMAKE_ASM-ATT_COMPILER> ${ARCH_ASM_FLAGS} -o <OBJECT> <SOURCE>")
+# set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> ${ARCH_ASM_FLAGS} -o <OBJECT> <SOURCE>")
+
+
 set(CMAKE_C_FLAGS ${ARCH_C_FLAGS})
-#set_property(TARGET kernel PROPERTY LINK_FLAGS foo bar)
 
 set_target_properties(boringos-kernel PROPERTIES LINK_FLAGS "-T ${ARCH_LINKER} -N ${ARCH_LINKER_FLAGS}")
 
