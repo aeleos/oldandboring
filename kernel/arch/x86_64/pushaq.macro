@@ -1,0 +1,36 @@
+%macro pushaq 0
+    sub $120, rsp
+    mov rax, 112(rsp)
+    mov rbx, 104(rsp)
+    mov rcx, 96(rsp)
+    mov rdx, 88(rsp)
+    mov rbp, 80(rsp)
+    mov rdi, 72(rsp)
+    mov rsi, 64(rsp)
+    mov r8, 56(rsp)
+    mov r9, 48(rsp)
+    mov r10, 40(rsp)
+    mov r11, 32(rsp)
+    mov r12, 24(rsp)
+    mov r13, 16(rsp)
+    mov r14, 8(rsp)
+    mov r15, 0(rsp)
+%endmacro
+
+%macro popaq 0
+    pop rax
+    pop rbx
+    pop rcx
+    pop rdx
+    pop rbp
+    pop rdi
+    pop rsi
+    pop r8
+    pop r9
+    pop r10
+    pop r11
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+%endmacro

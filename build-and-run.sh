@@ -22,12 +22,12 @@ function build_kernel() {
     mkdir kernel/build
   fi
   pushd kernel/build
-    if [ -n "$FLAG_D" ]; then
-      cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. || bail
-    else
-      cmake .. || bail
-    fi
-    make install || bail
+  if [ -n "$FLAG_D" ]; then
+    cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. || bail
+  else
+    cmake .. || bail
+  fi
+  make install || bail
   popd
 }
 
@@ -39,11 +39,11 @@ while getopts 'hfrd' flag; do
     h|\?)
       print_build_help
       exit 0
-      ;;
+    ;;
     *)
       echo "Unexpected option ${flag}"
       exit 0
-      ;;
+    ;;
   esac
 done
 
@@ -70,6 +70,6 @@ echo "$DIR"
 build_kernel
 
 
-grub-mkrescue /usr/lib/grub/i386-pc -o boringos-disk.img util || bail
+grub-mkrescue -o boringos-disk.img util || bail
 
-qemu-system-i386 -cdrom boringos-disk.img || bail
+qemu-system-x86_64 -cdrom boringos-disk.img || bail

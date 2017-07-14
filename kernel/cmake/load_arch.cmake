@@ -2,9 +2,11 @@ FUNCTION(LOAD_ARCH ARCH)
   # Load flags associated with ISA and Profile
   INCLUDE("arch/${ARCH}/arch.cmake")
 
-  FILE(GLOB ARCH_SRCS "arch/${ARCH}/*.c" "arch/${ARCH}/*.S")
+  FILE(GLOB ARCH_SRCS "arch/${ARCH}/*.c" "arch/${ARCH}/*.asm")
 
   FILE(GLOB ARCH_LINKER "arch/${ARCH}/linker.ld")
+
+  SET(ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/arch/${ARCH}/" PARENT_SCOPE)
 
 
   # Now export our output variables
@@ -14,7 +16,7 @@ FUNCTION(LOAD_ARCH ARCH)
 
   # And specific flags
   SET(ARCH_C_FLAGS ${ARCH_C_FLAGS} PARENT_SCOPE)
-  SET(ARCH_ATT_FLAGS ${ARCH_ASM_ATT_FLAGS} PARENT_SCOPE)
+  SET(ARCH_ASM_FLAGS ${ARCH_ASM_FLAGS} PARENT_SCOPE)
 
   # ...
 ENDFUNCTION(LOAD_ARCH)
