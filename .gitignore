@@ -94,3 +94,5 @@ hdd/usr/gcc
 /util/*.vdi
 /util/boot/boringos-kernel
 /util/bin/
+
+target
