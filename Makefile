@@ -18,7 +18,10 @@ clean:
 	@rm -r build
 
 run: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso)
+	@qemu-system-x86_64 -cdrom $(iso) -s
+
+debug: $(iso)
+	@qemu-system-x86_64 -cdrom $(iso) -s -S
 
 iso: $(iso)
 
@@ -35,7 +38,7 @@ $(kernel): kernel $(rust_os) $(assembly_object_files) $(linker_script)
 
 kernel:
 	export CARGO_TARGET_DIR=build
-	@xargo build --target $(target)
+	@xargo build --target $(target) --verbose
 
 # compile assembly files
 build/arch/$(arch)/%.o: kernel/arch/$(arch)/%.asm

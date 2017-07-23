@@ -11,22 +11,22 @@ use spin::Mutex;
 #[derive(Debug, Clone, Copy)]
 #[repr(u8)]
 pub enum Color {
-    Black       = 0,
-    Blue        = 1,
-    Green       = 2,
-    Cyan        = 3,
-    Red         = 4,
-    Magenta     = 5,
-    Brown       = 6,
-    LightGray   = 7,
-    DarkGray    = 8,
-    LightBlue   = 9,
-    LightGreen  = 10,
-    LightCyan   = 11,
-    LightRed    = 12,
-    Pink        = 13,
-    Yellow      = 14,
-    White       = 15,
+    Black = 0,
+    Blue = 1,
+    Green = 2,
+    Cyan = 3,
+    Red = 4,
+    Magenta = 5,
+    Brown = 6,
+    LightGray = 7,
+    DarkGray = 8,
+    LightBlue = 9,
+    LightGreen = 10,
+    LightCyan = 11,
+    LightRed = 12,
+    Pink = 13,
+    Yellow = 14,
+    White = 15,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -154,15 +154,3 @@ pub fn clear_screen() {
         println!("");
     }
 }
-
-// pub fn print_something() {
-//     use core::fmt::Write;
-//     let mut writer = Writer {
-//         column_position: 0,
-//         color_code: ColorCode::new(Color::LightGreen, Color::Black),
-//         buffer: unsafe { Unique::new(0xb8000 as *mut _) },
-//     };
-//
-//     writer.write_str("Hello Rust World");
-//     write!(writer, "Formatting test with numbers {} and {}", 42, 1.0/3.0);
-// }

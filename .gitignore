@@ -96,3 +96,6 @@ hdd/usr/gcc
 /util/bin/
 
 target
+
+
+build/*
