@@ -1,6 +1,6 @@
 use super::{VirtualAddress, PhysicalAddress, Page, ENTRY_COUNT};
 use super::entry::*;
-use super::table::{self, Table, Level4, Level1};
+use super::table::{self, Table, Level4};
 use memory::{PAGE_SIZE, Frame, FrameAllocator};
 use core::ptr::Unique;
 
@@ -10,7 +10,7 @@ pub struct Mapper {
 
 impl Mapper {
     pub unsafe fn new() -> Mapper {
-        Mapper { p4: Unique::new(table::P4) }
+        Mapper { p4: Unique::new_unchecked(table::P4) }
     }
 
     pub fn p4(&self) -> &Table<Level4> {

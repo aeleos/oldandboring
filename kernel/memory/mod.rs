@@ -1,7 +1,7 @@
 pub use self::area_frame_allocator::AreaFrameAllocator;
 use self::paging::PhysicalAddress;
 pub use self::paging::{test_paging, remap_the_kernel};
-
+use multiboot2::BootInformation;
 mod area_frame_allocator;
 mod paging;
 
@@ -55,4 +55,60 @@ impl Iterator for FrameIter {
 pub trait FrameAllocator {
     fn allocate_frame(&mut self) -> Option<Frame>;
     fn deallocate_frame(&mut self, frame: Frame);
+}
+
+
+pub fn init(boot_info: &BootInformation) {
+    assert_has_not_been_called!("memory::init can only be called once");
+
+    let memory_map_tag = boot_info.memory_map_tag().expect("Memory map tag required");
+
+    let elf_sections_tag = boot_info.elf_sections_tag().expect(
+        "Elf-sections tag required",
+    );
+
+    let kernel_start = elf_sections_tag
+        .sections()
+        .filter(|s| s.is_allocated())
+        .map(|s| s.addr)
+        .min()
+        .unwrap();
+    let kernel_end = elf_sections_tag
+        .sections()
+        .filter(|s| s.is_allocated())
+        .map(|s| s.addr + s.size)
+        .max()
+        .unwrap();
+
+    println!(
+        "kernel start: 0x{:#x}, kernel end: 0x{:#x}",
+        kernel_start,
+        kernel_end
+    );
+    println!(
+        "multiboot start: 0x{:#x}, multiboot end: 0x{:#x}",
+        boot_info.start_address(),
+        boot_info.end_address()
+    );
+
+    let mut frame_allocator = AreaFrameAllocator::new(
+        kernel_start as usize,
+        kernel_end as usize,
+        boot_info.start_address(),
+        boot_info.end_address(),
+        memory_map_tag.memory_areas(),
+    );
+
+    let mut active_table = paging::remap_the_kernel(&mut frame_allocator, boot_info);
+
+    use self::paging::Page;
+    use hole_list_allocator::{HEAP_START, HEAP_SIZE};
+
+    let heap_start_page = Page::containing_address(HEAP_START);
+    let heap_end_page = Page::containing_address(HEAP_START + HEAP_SIZE);
+
+    for page in Page::range_inclusive(heap_start_page, heap_end_page) {
+        active_table.map(page, paging::WRITABLE, &mut frame_allocator);
+    }
+
 }

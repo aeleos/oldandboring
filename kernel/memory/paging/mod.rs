@@ -1,12 +1,10 @@
 pub use self::entry::*;
 pub use self::mapper::Mapper;
 
-use self::table::{Table, Level4};
 use self::temporary_page::TemporaryPage;
 
 use memory::{PAGE_SIZE, Frame, FrameAllocator};
 
-use core::ptr::Unique;
 use core::ops::{Deref, DerefMut};
 
 use multiboot2::BootInformation;
@@ -22,7 +20,7 @@ const ENTRY_COUNT: usize = 512;
 pub type PhysicalAddress = usize;
 pub type VirtualAddress = usize;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Page {
     number: usize,
 }
@@ -55,6 +53,32 @@ impl Page {
 
     fn p1_index(&self) -> usize {
         (self.number >> 0) & 0o777
+    }
+
+    pub fn range_inclusive(start: Page, end: Page) -> PageIter {
+        PageIter {
+            start: start,
+            end: end,
+        }
+    }
+}
+
+pub struct PageIter {
+    start: Page,
+    end: Page,
+}
+
+impl Iterator for PageIter {
+    type Item = Page;
+
+    fn next(&mut self) -> Option<Page> {
+        if self.start <= self.end {
+            let page = self.start;
+            self.start.number += 1;
+            Some(page)
+        } else {
+            None
+        }
     }
 }
 
@@ -152,6 +176,7 @@ impl InactivePageTable {
     }
 }
 
+#[allow(dead_code)]
 pub fn test_paging<A>(allocator: &mut A)
 where
     A: FrameAllocator,
@@ -181,7 +206,7 @@ where
 }
 
 
-pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation)
+pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation) -> ActivePageTable
 where
     A: FrameAllocator,
 {
@@ -200,7 +225,6 @@ where
         );
 
         for section in elf_sections_tag.sections() {
-            use self::entry::WRITABLE;
 
             if !section.is_allocated() {
                 // section is not loaded into memory
@@ -252,4 +276,6 @@ where
 
     active_table.unmap(old_p4_page, allocator);
     println!("guard page at {:#x}", old_p4_page.start_address());
+
+    active_table
 }
