@@ -4,6 +4,7 @@ name = "boring_os"
 version = "0.1.0"
 
 [dependencies]
+bit_field = "0.8.0"
 bitflags = "0.9.1"
 multiboot2 = "0.3.2"
 once = "0.3.3"
@@ -14,6 +15,10 @@ x86_64 = "0.1.2"
 
 [dependencies.hole_list_allocator]
 path = "kernel/libs/hole_list_allocator"
+
+[dependencies.lazy_static]
+features = ["spin_no_std"]
+lazy_static = "0.2.8"
 
 [lib]
 crate-type = ["staticlib"]

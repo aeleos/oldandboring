@@ -2,8 +2,10 @@
 name = "boring_os"
 version = "0.1.0"
 dependencies = [
+ "bit_field 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "hole_list_allocator 0.1.0",
+ "lazy_static 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "multiboot2 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "once 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "rlibc 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -15,6 +17,11 @@ dependencies = [
 [[package]]
 name = "bit_field"
 version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "bit_field"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -90,6 +97,7 @@ dependencies = [
 
 [metadata]
 "checksum bit_field 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ff91a64014e1bc53bf643920f2c9ab5f0980d92a0948295f3ee550e9266849ad"
+"checksum bit_field 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5f82981c3dcf3b924f94c53663335140e8c95a781ce72c1c676c9bc98e18e649"
 "checksum bitflags 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8dead7461c1127cf637931a1e50934eb6eee8bff2f74433ac7909e9afcee04a3"
 "checksum bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4efd02e230a02e18f92fc2735f44597385ed02ad8f831e7c1c1156ee5e1ab3a5"
 "checksum lazy_static 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "3b37545ab726dd833ec6420aaba8231c5b320814b9029ad585555d2a03e94fbf"

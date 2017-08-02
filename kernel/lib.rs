@@ -4,6 +4,7 @@
 #![feature(alloc)]
 #![default_lib_allocator]
 #![feature(allocator_internals)]
+#![feature(abi_x86_interrupt)]
 #![no_std]
 
 extern crate rlibc;
@@ -18,12 +19,14 @@ extern crate hole_list_allocator;
 extern crate alloc;
 #[macro_use]
 extern crate once;
-
+#[macro_use]
+extern crate lazy_static;
+extern crate bit_field;
 
 #[macro_use]
 mod vga_buffer;
 mod memory;
-
+mod interrupts;
 
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
@@ -35,25 +38,18 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     enable_nxe_bit();
     enable_write_protect_bit();
 
-    memory::init(boot_info);
+    let mut memory_controller = memory::init(boot_info);
     println!("Heap and paging initialized");
 
-    use alloc::boxed::Box;
-    let mut heap_test = Box::new(42);
-    *heap_test -= 15;
-    let heap_test2 = Box::new("hello");
-    println!("{:?} {:?}", heap_test, heap_test2);
+    interrupts::init(&mut memory_controller);
+    println!("Interrupts initialized");
 
-    for i in 0..10000 {
-        format!("Some String");
+    fn stack_overflow() {
+        stack_overflow(); // for each recursion, the return address is pushed
     }
 
-
-    let mut vec_test = vec![1, 2, 3, 4, 5, 6, 7];
-    vec_test[3] = 42;
-    for i in &vec_test {
-        print!("{} ", i);
-    }
+    // trigger a stack overflow
+    stack_overflow();
 
     // memory::test_paging(&mut frame_allocator);
 

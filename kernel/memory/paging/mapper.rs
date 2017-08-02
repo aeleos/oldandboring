@@ -4,6 +4,7 @@ use super::table::{self, Table, Level4};
 use memory::{PAGE_SIZE, Frame, FrameAllocator};
 use core::ptr::Unique;
 
+
 pub struct Mapper {
     p4: Unique<Table<Level4>>,
 }
@@ -109,6 +110,7 @@ impl Mapper {
 
     // Unmaps the given page and adds all freed frames
     // to the given `FrameAllocator`
+    #[allow(unused_variables)]
     pub fn unmap<A>(&mut self, page: Page, allocator: &mut A)
     where
         A: FrameAllocator,
