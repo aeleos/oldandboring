@@ -1,12 +1,12 @@
 use x86_64::structures::idt::{Idt, ExceptionStackFrame};
 use x86_64::structures::tss::TaskStateSegment;
 use x86_64::VirtualAddress;
-
 use memory::MemoryController;
 
 use spin::Once;
 
 mod gdt;
+mod pic;
 
 const DOUBLE_FAULT_IST_INDEX: usize = 0;
 
@@ -18,6 +18,8 @@ lazy_static! {
             idt.double_fault.set_handler_fn(double_fault_handler)
                 .set_stack_index(DOUBLE_FAULT_IST_INDEX as u16);
         }
+        idt.interrupts[0].set_handler_fn(pit_handler);
+        idt.interrupts[1].set_handler_fn(keyboard_handler);
         idt
     };
 }
@@ -29,6 +31,7 @@ pub fn init(memory_controller: &mut MemoryController) {
     use x86_64::structures::gdt::SegmentSelector;
     use x86_64::instructions::segmentation::set_cs;
     use x86_64::instructions::tables::load_tss;
+    use x86_64::instructions::interrupts;
 
     let double_fault_stack = memory_controller.alloc_stack(1).expect(
         "could not allocate double fault stack",
@@ -56,17 +59,42 @@ pub fn init(memory_controller: &mut MemoryController) {
     unsafe {
         // reload code segment register
         set_cs(code_selector);
+
         // load TSS
         load_tss(tss_selector);
     }
 
     IDT.load();
+
+    // Initialize the PIC and enable interrupts (STI)
+    unsafe {
+        pic::initialize();
+        interrupts::enable();
+    }
+
 }
 
+#[allow(unused_variables)]
+extern "x86-interrupt" fn keyboard_handler(stack_frame: &mut ExceptionStackFrame) {
+    println!("Successfully handled keyboard interrupt");
+    unsafe { pic::notify_irq_eoi(33) }
+}
+
+
+#[allow(unused_variables)]
+extern "x86-interrupt" fn pit_handler(stack_frame: &mut ExceptionStackFrame) {
+    // Just ignore, timer handling will come later.
+    unsafe { pic::notify_irq_eoi(32) }
+}
+
+
+#[allow(unused_variables)]
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut ExceptionStackFrame) {
     println!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame);
 }
 
+
+#[allow(unused_variables)]
 extern "x86-interrupt" fn double_fault_handler(
     stack_frame: &mut ExceptionStackFrame,
     _error_code: u64,

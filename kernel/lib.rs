@@ -1,11 +1,8 @@
-#![feature(lang_items)]
-#![feature(const_fn)]
-#![feature(unique)]
-#![feature(alloc)]
+#![feature(lang_items, const_fn, unique, asm, alloc,
+    allocator_internals, abi_x86_interrupt)]
 #![default_lib_allocator]
-#![feature(allocator_internals)]
-#![feature(abi_x86_interrupt)]
 #![no_std]
+#![allow(dead_code)]
 
 extern crate rlibc;
 extern crate volatile;
@@ -15,7 +12,6 @@ extern crate multiboot2;
 extern crate bitflags;
 extern crate x86_64;
 extern crate hole_list_allocator;
-#[macro_use]
 extern crate alloc;
 #[macro_use]
 extern crate once;
@@ -23,10 +19,15 @@ extern crate once;
 extern crate lazy_static;
 extern crate bit_field;
 
+use spin::Mutex;
+
 #[macro_use]
 mod vga_buffer;
 mod memory;
 mod interrupts;
+mod cpuio;
+
+static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
@@ -44,13 +45,11 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     interrupts::init(&mut memory_controller);
     println!("Interrupts initialized");
 
-    fn stack_overflow() {
-        stack_overflow(); // for each recursion, the return address is pushed
-    }
 
-    // trigger a stack overflow
-    stack_overflow();
-
+    // unsafe {
+    //     int!(42);
+    //     // int!(42);
+    // }
     // memory::test_paging(&mut frame_allocator);
 
     // println!("{:?}", frame_allocator.allocate_frame());
