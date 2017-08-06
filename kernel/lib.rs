@@ -26,6 +26,7 @@ mod vga_buffer;
 mod memory;
 mod interrupts;
 mod cpuio;
+mod drivers;
 
 static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
@@ -44,17 +45,6 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     interrupts::init(&mut memory_controller);
     println!("Interrupts initialized");
-
-
-    // unsafe {
-    //     int!(42);
-    //     // int!(42);
-    // }
-    // memory::test_paging(&mut frame_allocator);
-
-    // println!("{:?}", frame_allocator.allocate_frame());
-    // println!("{:?}", frame_allocator.allocate_frame());
-    // println!("{:?}", frame_allocator.allocate_frame());
 
 
     loop {}

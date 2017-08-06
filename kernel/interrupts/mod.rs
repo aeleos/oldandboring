@@ -4,9 +4,13 @@ use x86_64::VirtualAddress;
 use memory::MemoryController;
 
 use spin::Once;
+use drivers;
 
 mod gdt;
 mod pic;
+mod pit;
+
+
 
 const DOUBLE_FAULT_IST_INDEX: usize = 0;
 
@@ -69,6 +73,7 @@ pub fn init(memory_controller: &mut MemoryController) {
     // Initialize the PIC and enable interrupts (STI)
     unsafe {
         pic::initialize();
+        pit::initialize();
         interrupts::enable();
     }
 
@@ -76,7 +81,8 @@ pub fn init(memory_controller: &mut MemoryController) {
 
 #[allow(unused_variables)]
 extern "x86-interrupt" fn keyboard_handler(stack_frame: &mut ExceptionStackFrame) {
-    println!("Successfully handled keyboard interrupt");
+    // println!("Successfully handled keyboard interrupt");
+    drivers::keyboard::handle_irq();
     unsafe { pic::notify_irq_eoi(33) }
 }
 
@@ -84,6 +90,7 @@ extern "x86-interrupt" fn keyboard_handler(stack_frame: &mut ExceptionStackFrame
 #[allow(unused_variables)]
 extern "x86-interrupt" fn pit_handler(stack_frame: &mut ExceptionStackFrame) {
     // Just ignore, timer handling will come later.
+    pit::handle_irq();
     unsafe { pic::notify_irq_eoi(32) }
 }
 
