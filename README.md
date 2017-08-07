@@ -15,6 +15,7 @@ A boring description for a boring os
 
 ## TODO
  - Make shell actually usable
+ - Multitasking
  - Get more information about host system
  - PCI driver
  - Networking?
