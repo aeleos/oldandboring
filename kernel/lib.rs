@@ -8,16 +8,19 @@ extern crate rlibc;
 extern crate volatile;
 extern crate spin;
 extern crate multiboot2;
-#[macro_use]
-extern crate bitflags;
 extern crate x86_64;
 extern crate hole_list_allocator;
 extern crate alloc;
+extern crate bit_field;
+// extern crate cupid;
+
+#[macro_use]
+extern crate bitflags;
 #[macro_use]
 extern crate once;
 #[macro_use]
 extern crate lazy_static;
-extern crate bit_field;
+
 
 use spin::Mutex;
 
@@ -39,6 +42,9 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     enable_nxe_bit();
     enable_write_protect_bit();
+
+    // let information = cupid::master();
+    // println!("{:#?}".information);
 
     let mut memory_controller = memory::init(boot_info);
     println!("Heap and paging initialized");
