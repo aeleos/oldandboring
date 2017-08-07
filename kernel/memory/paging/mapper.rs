@@ -74,10 +74,13 @@ impl Mapper {
     // The `PRESRNT` flag is added by default.
     // It needs a `FrameAllocator` as it might
     // Need to create new page tables.
-    pub fn map_to<A>(&mut self, page: Page, frame: Frame, flags: EntryFlags, allocator: &mut A)
-    where
-        A: FrameAllocator,
-    {
+    pub fn map_to<A: FrameAllocator>(
+        &mut self,
+        page: Page,
+        frame: Frame,
+        flags: EntryFlags,
+        allocator: &mut A,
+    ) {
         let p4 = self.p4_mut();
         let mut p3 = p4.next_table_create(page.p4_index(), allocator);
         let mut p2 = p3.next_table_create(page.p3_index(), allocator);
@@ -88,10 +91,7 @@ impl Mapper {
 
     // Maps the page to some free frame with the provided flags.
     // The free frame is allocated from the given `FrameAllocator`
-    pub fn map<A>(&mut self, page: Page, flags: EntryFlags, allocator: &mut A)
-    where
-        A: FrameAllocator,
-    {
+    pub fn map<A: FrameAllocator>(&mut self, page: Page, flags: EntryFlags, allocator: &mut A) {
         let frame = allocator.allocate_frame().expect("out of memory");
         self.map_to(page, frame, flags, allocator)
 
@@ -100,10 +100,12 @@ impl Mapper {
     // Identity map the given frame with the provided flags
     // The `FrameAllocator` is used to create new page
     // tables if needed
-    pub fn identity_map<A>(&mut self, frame: Frame, flags: EntryFlags, allocator: &mut A)
-    where
-        A: FrameAllocator,
-    {
+    pub fn identity_map<A: FrameAllocator>(
+        &mut self,
+        frame: Frame,
+        flags: EntryFlags,
+        allocator: &mut A,
+    ) {
         let page = Page::containing_address(frame.start_address());
         self.map_to(page, frame, flags, allocator)
     }
@@ -111,10 +113,7 @@ impl Mapper {
     // Unmaps the given page and adds all freed frames
     // to the given `FrameAllocator`
     #[allow(unused_variables)]
-    pub fn unmap<A>(&mut self, page: Page, allocator: &mut A)
-    where
-        A: FrameAllocator,
-    {
+    pub fn unmap<A: FrameAllocator>(&mut self, page: Page, allocator: &mut A) {
         assert!(self.translate(page.start_address()).is_some());
 
         let p1 = self.p4_mut()

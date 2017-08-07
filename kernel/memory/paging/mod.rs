@@ -114,14 +114,12 @@ impl ActivePageTable {
         ActivePageTable { mapper: Mapper::new() }
     }
 
-    pub fn with<F>(
+    pub fn with<F: FnOnce(&mut Mapper)>(
         &mut self,
         table: &mut InactivePageTable,
         temporary_page: &mut temporary_page::TemporaryPage,
         f: F,
-    ) where
-        F: FnOnce(&mut Mapper),
-    {
+    ) {
         use x86_64::instructions::tlb;
         use x86_64::registers::control_regs;
 
@@ -186,10 +184,7 @@ impl InactivePageTable {
 }
 
 #[allow(dead_code)]
-pub fn test_paging<A>(allocator: &mut A)
-where
-    A: FrameAllocator,
-{
+pub fn test_paging<A: FrameAllocator>(allocator: &mut A) {
     let mut page_table = unsafe { ActivePageTable::new() };
 
     let addr = 42 * 512 * 512 * 4096;
@@ -215,10 +210,10 @@ where
 }
 
 
-pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation) -> ActivePageTable
-where
-    A: FrameAllocator,
-{
+pub fn remap_the_kernel<A: FrameAllocator>(
+    allocator: &mut A,
+    boot_info: &BootInformation,
+) -> ActivePageTable {
     let mut temporary_page = TemporaryPage::new(Page { number: 0xcafebabe }, allocator);
 
     let mut active_table = unsafe { ActivePageTable::new() };

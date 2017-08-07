@@ -11,10 +11,7 @@ pub struct Table<L: TableLevel> {
     level: PhantomData<L>,
 }
 
-impl<L> Table<L>
-where
-    L: TableLevel,
-{
+impl<L: TableLevel> Table<L> {
     pub fn zero(&mut self) {
         for entry in self.entries.iter_mut() {
             entry.set_unused();
@@ -22,10 +19,7 @@ where
     }
 }
 
-impl<L> Table<L>
-where
-    L: HierarchicalLevel,
-{
+impl<L: HierarchicalLevel> Table<L> {
     fn next_table_address(&self, index: usize) -> Option<usize> {
         let entry_flags = self[index].flags();
         if entry_flags.contains(PRESENT) && !entry_flags.contains(HUGE_PAGE) {
@@ -48,14 +42,11 @@ where
         })
     }
 
-    pub fn next_table_create<A>(
+    pub fn next_table_create<A: FrameAllocator>(
         &mut self,
         index: usize,
         allocator: &mut A,
-    ) -> &mut Table<L::NextLevel>
-    where
-        A: FrameAllocator,
-    {
+    ) -> &mut Table<L::NextLevel> {
         if self.next_table(index).is_none() {
             assert!(
                 !self.entries[index].flags().contains(HUGE_PAGE),
@@ -69,10 +60,7 @@ where
     }
 }
 
-impl<L> Index<usize> for Table<L>
-where
-    L: TableLevel,
-{
+impl<L: TableLevel> Index<usize> for Table<L> {
     type Output = Entry;
 
     fn index(&self, index: usize) -> &Entry {
@@ -80,10 +68,7 @@ where
     }
 }
 
-impl<L> IndexMut<usize> for Table<L>
-where
-    L: TableLevel,
-{
+impl<L: TableLevel> IndexMut<usize> for Table<L> {
     fn index_mut(&mut self, index: usize) -> &mut Entry {
         &mut self.entries[index]
     }

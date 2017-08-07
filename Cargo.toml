@@ -17,7 +17,7 @@ x86_64 = "0.1.2"
 path = "kernel/libs/hole_list_allocator"
 
 [dependencies.lazy_static]
-lazy_static = "0.2.8"
+version = "0.2.8"
 features = ["spin_no_std"]
 
 [lib]

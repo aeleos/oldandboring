@@ -82,7 +82,7 @@ pub fn init(memory_controller: &mut MemoryController) {
 #[allow(unused_variables)]
 extern "x86-interrupt" fn keyboard_handler(stack_frame: &mut ExceptionStackFrame) {
     // println!("Successfully handled keyboard interrupt");
-    drivers::keyboard::handle_irq();
+    drivers::keyboard::ps2::handle_irq();
     unsafe { pic::notify_irq_eoi(33) }
 }
 
