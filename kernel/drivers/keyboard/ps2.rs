@@ -95,7 +95,7 @@ lazy_static! {
 
 }
 
-pub fn handle_irq() {
+pub fn irq_handler() {
     let mut handler = &mut KB_HANDLER.lock();
 
     handler.update();

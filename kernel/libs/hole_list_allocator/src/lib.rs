@@ -6,8 +6,8 @@
 
 use spin::Mutex;
 use linked_list_allocator::Heap;
-use alloc::heap::{Alloc, AllocErr, Layout, Excess, CannotReallocInPlace};
-use core::{ptr, cmp};
+use alloc::heap::{Alloc, AllocErr, Layout, CannotReallocInPlace};
+use core::ptr;
 
 
 extern crate alloc;
@@ -151,9 +151,7 @@ unsafe impl<'a> Alloc for &'a HoleListAllocator {
         if new_ptr.is_null() {
             Err(AllocErr::Exhausted { request: new_layout })
         } else {
-            unsafe {
-                ptr::copy(ptr, new_ptr, cmp::min(old_layout.size(), new_layout.size()));
-            }
+            ptr::copy(ptr, new_ptr, cmp::min(old_layout.size(), new_layout.size()));
             self.dealloc(ptr, old_layout);
             Ok(new_ptr as *mut u8)
         }
@@ -184,6 +182,7 @@ unsafe impl<'a> Alloc for &'a HoleListAllocator {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     unsafe fn shrink_in_place(
         &mut self,
         ptr: *mut u8,

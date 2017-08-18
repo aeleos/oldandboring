@@ -95,7 +95,7 @@ hdd/usr/gcc
 /util/boot/boringos-kernel
 /util/bin/
 
-target
+target/*
 
 
 build/*

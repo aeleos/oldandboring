@@ -1,6 +1,5 @@
 use cpuio::UnsafePort;
 use spin::Mutex;
-
 static PIT: Mutex<Pit> = Mutex::new(unsafe { Pit::new() });
 // Rate is 1000hz, so we want a trigger every 1000 ticks
 static SEC_TIMER: Mutex<PitHandler> = Mutex::new(PitHandler::new(1000, second_trigger));
@@ -88,9 +87,10 @@ impl PitHandler {
 }
 
 pub fn initialize() {
+    // interrupts::register_irq_handler(0, irq_handler);
     PIT.lock().set_timer_phase(1000);
 }
 
-pub fn handle_irq() {
+pub fn irq_handler() {
     SEC_TIMER.lock().update();
 }

@@ -1,9 +1,9 @@
 #![feature(lang_items, const_fn, unique, asm, alloc,
-    allocator_internals, abi_x86_interrupt)]
+    allocator_internals, abi_x86_interrupt, concat_idents, fixed_size_array)]
 #![default_lib_allocator]
 #![no_std]
 #![allow(dead_code)]
-
+#![feature(trace_macros)]
 extern crate rlibc;
 extern crate volatile;
 extern crate spin;
@@ -12,7 +12,7 @@ extern crate x86_64;
 extern crate hole_list_allocator;
 extern crate alloc;
 extern crate bit_field;
-// extern crate cupid;
+extern crate fringe;
 
 #[macro_use]
 extern crate bitflags;
@@ -20,7 +20,8 @@ extern crate bitflags;
 extern crate once;
 #[macro_use]
 extern crate lazy_static;
-
+#[macro_use]
+extern crate arrayref;
 
 use spin::Mutex;
 
@@ -51,6 +52,11 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     interrupts::init(&mut memory_controller);
     println!("Interrupts initialized");
+
+    println!("Scanning PCI bus...");
+    for function in drivers::pci::functions() {
+        println!("{}", function);
+    }
 
 
     loop {}

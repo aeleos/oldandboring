@@ -19,8 +19,8 @@ pub unsafe fn initialize() {
 
 /// Unsafe function to lock the PIC and notify that an interrupt is finished
 /// being handled
-pub unsafe fn notify_irq_eoi(int_no: u8) {
-    PICS.lock().notify_irq_eoi(int_no);
+pub unsafe fn notify_isr_eoi(int_no: u8) {
+    PICS.lock().notify_isr_eoi(int_no);
 }
 
 /// An individual PIC chip.  This is not exported, because we always access
@@ -45,7 +45,7 @@ impl Pic {
 
     /// Notify us that an interrupt has been handled and that we're ready
     /// for more.
-    unsafe fn notify_irq_eoi(&mut self) {
+    unsafe fn notify_isr_eoi(&mut self) {
         self.command.write(CMD_END_OF_INTERRUPT);
     }
 }
@@ -132,15 +132,12 @@ impl ChainedPics {
         )
     }
 
-    /// Figure out which (if any) PICs in our chain need to know about this
-    /// interrupt.  This is tricky, because all interrupts from `pics[1]`
-    /// get chained through `pics[0]`.
-    pub unsafe fn notify_irq_eoi(&mut self, interrupt_id: u8) {
+    pub unsafe fn notify_isr_eoi(&mut self, interrupt_id: u8) {
         if self.does_handle_interrupt(interrupt_id) {
             if self.pics[1].does_handle_interrupt(interrupt_id) {
-                self.pics[1].notify_irq_eoi();
+                self.pics[1].notify_isr_eoi();
             }
-            self.pics[0].notify_irq_eoi();
+            self.pics[0].notify_isr_eoi();
         }
     }
 }
