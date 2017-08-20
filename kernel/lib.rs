@@ -1,5 +1,5 @@
 #![feature(lang_items, const_fn, unique, asm, alloc,
-    allocator_internals, abi_x86_interrupt, concat_idents, fixed_size_array)]
+    allocator_internals, abi_x86_interrupt, concat_idents)]
 #![default_lib_allocator]
 #![no_std]
 #![allow(dead_code)]
@@ -54,9 +54,11 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     println!("Interrupts initialized");
 
     println!("Scanning PCI bus...");
-    for function in drivers::pci::functions() {
+    for function in drivers::pci::init_pci() {
         println!("{}", function);
     }
+
+
 
 
     loop {}

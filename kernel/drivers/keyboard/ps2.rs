@@ -96,12 +96,16 @@ lazy_static! {
 }
 
 pub fn irq_handler() {
-    let mut handler = &mut KB_HANDLER.lock();
+    let handler = &mut KB_HANDLER.lock();
 
     handler.update();
 
     if handler.keyboard.should_print_key() {
         if let Some(ascii) = handler.keyboard.get_ascii(true) {
+            if ascii as char == '\r' {
+                println!("");
+                return;
+            }
             print!("{}", ascii as char);
 
         }

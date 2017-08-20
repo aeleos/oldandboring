@@ -20,3 +20,40 @@ A boring description for a boring os
  - PCI driver
  - Networking?
  - Filesystem?
+
+
+## Installation
+This should install everything needed to get started from a clean ubuntu 16.04 installation
+
+
+Install rustup
+
+`curl https://sh.rustup.rs -sSf | sh`
+
+Source the new rust environment variables
+
+`source $HOME/.cargo/env`
+
+Clone the repository and cd into the folder
+
+`git clone https://github.com/aeleos/BoringOS && cd BoringOS`
+
+Tell rustup to use the nightly
+
+`rustup override add nightly`
+
+Install xargo for compiling the toolchain
+
+`cargo install xargo`
+
+Add the rust-src component
+
+`rustup component add rust-src`
+
+Install some dependencies
+
+`sudo apt install qemu xorriso nasm grub-pc-bin`
+
+Build toolchain and BoringOS
+
+`make run`

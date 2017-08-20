@@ -1,5 +1,5 @@
-use core::array::FixedSizeArray;
 use alloc::boxed::Box;
+use core::fmt;
 
 #[derive(Debug)]
 #[repr(u8)]
@@ -28,7 +28,7 @@ pub enum DeviceClass {
 
 
 impl DeviceClass {
-    fn from_u8(c: u8) -> DeviceClass {
+    pub fn from_u8(c: u8) -> DeviceClass {
         if c <= DeviceClass::DataAndSignalProcessing as u8 {
             unsafe { ::core::intrinsics::transmute(c) }
         } else {
@@ -77,8 +77,7 @@ pub struct CommonHeader {
 }
 
 impl CommonHeader {
-    fn new(registers: &[u32]) -> CommonHeader {
-        assert_eq!(registers.len(), 4);
+    fn new(registers: &[u32; 4]) -> CommonHeader {
         CommonHeader {
             vendor_id: registers[0] as u16,
             device_id: (registers[0] >> 16) as u16,
@@ -98,22 +97,47 @@ impl CommonHeader {
     fn header_type(&self) -> HeaderType {
         HeaderType::from_u8(self.header_type & 0b0111_1111)
     }
+
+    pub fn is_multifunction(&self) -> bool {
+        (self.header_type >> 7) != 0
+    }
 }
+
+impl fmt::Display for CommonHeader {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{:04x} {:04x} {:?} {:02x}",
+            self.vendor_id,
+            self.device_id,
+            DeviceClass::from_u8(self.class_code),
+            self.subclass
+        )
+    }
+}
+
 
 pub fn is_valid(register_00: u32) -> bool {
     (register_00 as u16) != 0xFFFF
 }
 
-pub fn build_header(registers: [u32; 18]) -> Option<Box<PciHeader>> {
+pub fn build_header(registers: [u32; 18]) -> Box<PciHeader> {
     let (common_registers, other_registers) = array_refs!(&registers, 4, 14);
+    let common_header  = CommonHeader::new(common_registers);
     match common_header.header_type() {
-        HeaderType::Standard => Some(Box::new(StandardHeader::new(
-            CommonHeader::new(common_registers),
+        HeaderType::Standard => Box::new(StandardHeader::new(
+            common_header,
             other_registers,
-        ))),
-        HeaderType::Pci2PciBridge => unimplemented!(),
-        HeaderType::CardBusBridge => unimplemented!(),
-        _ => None,
+        )),
+        HeaderType::Pci2PciBridge => Box::new(Pci2PciBridgeHeader::new(
+            common_header,
+            other_registers,
+        )),
+        HeaderType::CardBusBridge => Box::new(CardBusBridgeHeader::new(
+            common_header,
+            other_registers,
+        )),
+        _ => panic!("Unknown header type, something has gone wrong"),
     }
 }
 
@@ -124,23 +148,6 @@ pub trait PciHeader {
 
     fn common(&self) -> &CommonHeader;
 }
-
-
-// impl fmt::Display for FunctionInfo {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(
-//             f,
-//             "{}.{}.{}: {:04x} {:04x} {:?} {:02x}",
-//             self.bus,
-//             self.device,
-//             self.function,
-//             self.vendor_id,
-//             self.device_id,
-//             self.class_code,
-//             self.subclass
-//         )
-//     }
-// }
 
 #[allow(dead_code)]
 #[repr(packed)]
@@ -181,6 +188,44 @@ impl PciHeader for StandardHeader {
             interrupt_pin: (registers[11] >> 8) as u8,
             min_grant: (registers[11] >> 16) as u8,
             max_latency: (registers[11] >> 24) as u8,
+        }
+    }
+
+    fn common(&self) -> &CommonHeader {
+        &self.common
+    }
+}
+
+// TODO implement handling for Pci2PciBridge header type
+struct Pci2PciBridgeHeader {
+    common: CommonHeader,
+    registers: [u32; 14],
+}
+
+impl PciHeader for Pci2PciBridgeHeader {
+    fn new(common_header: CommonHeader, registers: &[u32; 14]) -> Pci2PciBridgeHeader {
+        Pci2PciBridgeHeader {
+            common: common_header,
+            registers: *registers,
+        }
+    }
+
+    fn common(&self) -> &CommonHeader {
+        &self.common
+    }
+}
+
+// TODO implement handling for Pci2PciBridge header type
+struct CardBusBridgeHeader {
+    common: CommonHeader,
+    registers: [u32; 14],
+}
+
+impl PciHeader for CardBusBridgeHeader {
+    fn new(common_header: CommonHeader, registers: &[u32; 14]) -> CardBusBridgeHeader {
+        CardBusBridgeHeader {
+            common: common_header,
+            registers: *registers,
         }
     }
 

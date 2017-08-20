@@ -17,7 +17,6 @@ x86_64 = "0.1.2"
 [dependencies.fringe]
 features = ["alloc"]
 git = "https://github.com/aeleos/libfringe"
-no-default-features = true
 
 [dependencies.hole_list_allocator]
 path = "kernel/libs/hole_list_allocator"
