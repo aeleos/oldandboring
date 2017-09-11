@@ -1,5 +1,5 @@
-#![feature(lang_items, const_fn, unique, asm, alloc,
-    allocator_internals, abi_x86_interrupt, concat_idents)]
+#![feature(lang_items, const_fn, unique, asm, alloc, allocator_internals, abi_x86_interrupt,
+          concat_idents)]
 #![default_lib_allocator]
 #![no_std]
 #![allow(dead_code)]
@@ -9,7 +9,8 @@ extern crate volatile;
 extern crate spin;
 extern crate multiboot2;
 extern crate x86_64;
-extern crate hole_list_allocator;
+extern crate hole_list_allocator as allocator;
+#[macro_use]
 extern crate alloc;
 extern crate bit_field;
 extern crate fringe;
@@ -20,8 +21,7 @@ extern crate bitflags;
 extern crate once;
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
-extern crate arrayref;
+
 
 use spin::Mutex;
 
@@ -41,11 +41,15 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     let boot_info = unsafe { multiboot2::load(multiboot_information_address) };
 
+
+
     enable_nxe_bit();
     enable_write_protect_bit();
 
     // let information = cupid::master();
     // println!("{:#?}".information);
+    // drivers::vesa::init();
+
 
     let mut memory_controller = memory::init(boot_info);
     println!("Heap and paging initialized");
@@ -54,10 +58,25 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     println!("Interrupts initialized");
 
     println!("Scanning PCI bus...");
-    for function in drivers::pci::init_pci() {
-        println!("{}", function);
-    }
+    // for function in drivers::pci::init_pci() {Trait
+    //     println!("{}", function);
+    // }
 
+    drivers::pci::init_pci();
+
+    // drivers::pci::print_devices();
+
+    use alloc::boxed::Box;
+    let mut heap_test = Box::new(42);
+    *heap_test -= 15;
+    let heap_test2 = Box::new("hello");
+    println!("{:?} {:?}", heap_test, heap_test2);
+
+    let mut vec_test = vec![1, 2, 3, 4, 5, 6, 7];
+    vec_test[3] = 42;
+    for i in &vec_test {
+        print!("{} ", i);
+    }
 
 
 
@@ -66,7 +85,7 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 }
 
 fn enable_nxe_bit() {
-    use x86_64::registers::msr::{IA32_EFER, rdmsr, wrmsr};
+    use x86_64::registers::msr::{rdmsr, wrmsr, IA32_EFER};
 
     let nxe_bit = 1 << 11;
     unsafe {
@@ -76,7 +95,7 @@ fn enable_nxe_bit() {
 }
 
 fn enable_write_protect_bit() {
-    use x86_64::registers::control_regs::{cr0, cr0_write, Cr0};
+    use x86_64::registers::control_regs::{Cr0, cr0, cr0_write};
 
     unsafe { cr0_write(cr0() | Cr0::WRITE_PROTECT) };
 }

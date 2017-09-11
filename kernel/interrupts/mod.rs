@@ -1,4 +1,4 @@
-pub use x86_64::structures::idt::{Idt, ExceptionStackFrame, HandlerFunc};
+pub use x86_64::structures::idt::{ExceptionStackFrame, HandlerFunc, Idt};
 use x86_64::structures::tss::TaskStateSegment;
 use x86_64::VirtualAddress;
 use memory::MemoryController;
@@ -53,9 +53,9 @@ pub fn init(memory_controller: &mut MemoryController) {
     use x86_64::instructions::tables::load_tss;
     use x86_64::instructions::interrupts;
 
-    let double_fault_stack = memory_controller.alloc_stack(1).expect(
-        "could not allocate double fault stack",
-    );
+    let double_fault_stack = memory_controller
+        .alloc_stack(1)
+        .expect("could not allocate double fault stack");
 
     let tss = TSS.call_once(|| {
         let mut tss = TaskStateSegment::new();

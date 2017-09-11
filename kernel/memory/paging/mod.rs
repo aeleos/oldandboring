@@ -3,9 +3,9 @@ pub use self::mapper::Mapper;
 
 use self::temporary_page::TemporaryPage;
 
-use memory::{PAGE_SIZE, Frame, FrameAllocator};
+use memory::{Frame, FrameAllocator, PAGE_SIZE};
 
-use core::ops::{Deref, DerefMut, Add};
+use core::ops::{Add, Deref, DerefMut};
 
 use multiboot2::BootInformation;
 
@@ -32,7 +32,9 @@ impl Page {
             "invalid address: 0x{:x}",
             address
         );
-        Page { number: address / PAGE_SIZE }
+        Page {
+            number: address / PAGE_SIZE,
+        }
     }
 
     pub fn start_address(&self) -> usize {
@@ -67,7 +69,9 @@ impl Add<usize> for Page {
     type Output = Page;
 
     fn add(self, rhs: usize) -> Page {
-        Page { number: self.number + rhs }
+        Page {
+            number: self.number + rhs,
+        }
     }
 }
 
@@ -111,7 +115,9 @@ impl DerefMut for ActivePageTable {
 
 impl ActivePageTable {
     unsafe fn new() -> ActivePageTable {
-        ActivePageTable { mapper: Mapper::new() }
+        ActivePageTable {
+            mapper: Mapper::new(),
+        }
     }
 
     pub fn with<F: FnOnce(&mut Mapper)>(
@@ -224,9 +230,9 @@ pub fn remap_the_kernel<A: FrameAllocator>(
     };
 
     active_table.with(&mut new_table, &mut temporary_page, |mapper| {
-        let elf_sections_tag = boot_info.elf_sections_tag().expect(
-            "Memory map tag required",
-        );
+        let elf_sections_tag = boot_info
+            .elf_sections_tag()
+            .expect("Memory map tag required");
 
         for section in elf_sections_tag.sections() {
 

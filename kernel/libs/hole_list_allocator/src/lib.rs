@@ -6,7 +6,7 @@
 
 use spin::Mutex;
 use linked_list_allocator::Heap;
-use alloc::heap::{Alloc, AllocErr, Layout, CannotReallocInPlace};
+use alloc::heap::{Alloc, AllocErr, CannotReallocInPlace, Layout};
 use core::ptr;
 
 
@@ -19,10 +19,11 @@ extern crate lazy_static;
 pub const HEAP_START: usize = 0o_000_001_000_000_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
 
-lazy_static! {
-    static ref HEAP: Mutex<Heap> = Mutex::new(
-        unsafe { Heap::new(HEAP_START, HEAP_SIZE) }
-    );
+static HEAP: Mutex<Option<Heap>> = Mutex::new(None);
+
+//Set up the heap
+pub unsafe fn init(offset: usize, size: usize) {
+    *HEAP.lock() = Some(Heap::new(offset, size));
 }
 
 pub struct HoleListAllocator;
@@ -102,13 +103,10 @@ unsafe impl Alloc for HoleListAllocator {
 unsafe impl<'a> Alloc for &'a HoleListAllocator {
     #[inline]
     unsafe fn alloc(&mut self, layout: Layout) -> Result<*mut u8, AllocErr> {
-        let ptr = HEAP.lock().allocate_first_fit(layout.clone()).expect(
-            "out of memory",
-        );
-        if ptr.is_null() {
-            Err(AllocErr::Exhausted { request: layout })
+        if let Some(ref mut heap) = *HEAP.lock() {
+            heap.allocate_first_fit(layout)
         } else {
-            Ok(ptr as *mut u8)
+            panic!("Heap not initialized!");
         }
 
     }
@@ -131,7 +129,11 @@ unsafe impl<'a> Alloc for &'a HoleListAllocator {
     //
     #[inline]
     unsafe fn dealloc(&mut self, ptr: *mut u8, layout: Layout) {
-        HEAP.lock().deallocate(ptr, layout);
+        if let Some(ref mut heap) = *HEAP.lock() {
+            heap.deallocate(ptr, layout)
+        } else {
+            panic!("heap not initalized");
+        }
     }
 
     #[inline]
@@ -141,15 +143,19 @@ unsafe impl<'a> Alloc for &'a HoleListAllocator {
         old_layout: Layout,
         new_layout: Layout,
     ) -> Result<*mut u8, AllocErr> {
-        use core::{ptr, cmp};
+        use core::{cmp, ptr};
 
         if old_layout.align() != new_layout.align() {
-            return Err(AllocErr::Unsupported { details: "cannot change align" });
+            return Err(AllocErr::Unsupported {
+                details: "cannot change align",
+            });
         }
 
         let new_ptr = self.alloc(new_layout.clone()).ok().unwrap();
         if new_ptr.is_null() {
-            Err(AllocErr::Exhausted { request: new_layout })
+            Err(AllocErr::Exhausted {
+                request: new_layout,
+            })
         } else {
             ptr::copy(ptr, new_ptr, cmp::min(old_layout.size(), new_layout.size()));
             self.dealloc(ptr, old_layout);

@@ -4,18 +4,23 @@
 
 use core::fmt;
 use core::iter::Iterator;
-use spin::Mutex;
+use spin::{Mutex, MutexGuard};
 use cpuio;
-use self::headers::PciHeader;
-use alloc::boxed::Box;
+use self::headers::Header;
+use alloc::vec::Vec;
 
+// lazy_static! {
+//     static ref PCI_DEVICES: Mutex<Vec<Box<PciDeviceFunction>>> = Mutex::new(Vec::new());
+// }
 
 
 pub mod headers;
+mod vga;
 
 struct Pci {
     address: cpuio::Port<u32>,
     data: cpuio::Port<u32>,
+    devices: Vec<PciDeviceFunction>,
 }
 
 impl Pci {
@@ -41,27 +46,27 @@ impl Pci {
             return None;
         }
 
-        let mut registers: [u32; 18] = [0;18];
-        for (i, reg) in registers.iter_mut().enumerate(){
-            *reg =  self.read_config_register(bus, slot, function, (i as u8) * 0x4);
+        let mut registers: [u32; 18] = [0; 18];
+        for (i, reg) in registers.iter_mut().enumerate() {
+            *reg = self.read_config_register(bus, slot, function, (i as u8) * 0x4);
         }
 
         Some(PciDeviceFunction {
             bus: bus,
             device_id: slot,
             function: function,
-            header: headers::build_header(registers),
+            header: Header::new(registers),
+            owned: false,
         })
     }
-
 }
 
-
 pub struct PciDeviceFunction {
-    bus: u8,
-    device_id: u8,
-    function: u8,
-    header: Box<PciHeader>,
+    pub bus: u8,
+    pub device_id: u8,
+    pub function: u8,
+    pub header: Header,
+    pub owned: bool,
 }
 
 impl fmt::Display for PciDeviceFunction {
@@ -72,15 +77,30 @@ impl fmt::Display for PciDeviceFunction {
             self.bus,
             self.device_id,
             self.function,
-            self.header.common(),
+            self.header,
         )
     }
 }
 
-static PCI: Mutex<Pci> = Mutex::new(Pci {
-    address: unsafe { cpuio::Port::new(0xCF8) },
-    data: unsafe { cpuio::Port::new(0xCFC) },
-});
+// static PCI: Mutex<Pci> = Mutex::new(Pci {
+//     address: unsafe { cpuio::Port::new(0xCF8) },
+//     data: unsafe { cpuio::Port::new(0xCFC) },
+//     devices: Vec::new(),
+// });
+
+// lazy_static! {
+//     static ref PCI_DEVICES: Mutex<Vec<Box<PciDeviceFunction>>> = Mutex::new(Vec::new());
+// }
+
+lazy_static! {
+    static ref PCI: Mutex<Pci> = Mutex::new(Pci {
+            address: unsafe { cpuio::Port::new(0xCF8) },
+            data: unsafe { cpuio::Port::new(0xCFC) },
+            devices: Vec::new(),
+    });
+}
+
+
 
 const MAX_BUS: u8 = 255;
 const MAX_DEVICE: u8 = 31;
@@ -133,7 +153,7 @@ impl Iterator for PciDeviceFunctionIterator {
             if let Some(result) = unsafe { pci.probe(self.bus, self.device, self.function) } {
                 // Something was found
                 // Check to see if function 0 is multifunction
-                if self.function == 0 && result.header.common().is_multifunction() {
+                if self.function == 0 && result.header.is_multifunction() {
                     // It is, start enumerating functions on the device
                     self.multifunction = true;
                 }
@@ -142,7 +162,7 @@ impl Iterator for PciDeviceFunctionIterator {
                 self.update_state();
 
                 // Return our result
-                return Some(result)
+                return Some(result);
 
             } else {
 
@@ -155,7 +175,7 @@ impl Iterator for PciDeviceFunctionIterator {
 
 
 /// Brute-force PCI bus probing.
-pub fn init_pci() -> PciDeviceFunctionIterator {
+pub fn pci_iter() -> PciDeviceFunctionIterator {
     PciDeviceFunctionIterator {
         done: false,
         bus: 0,
@@ -165,6 +185,27 @@ pub fn init_pci() -> PciDeviceFunctionIterator {
     }
 }
 
+pub fn init_pci() {
+    PCI.lock().devices = pci_iter().collect();
+}
+
+pub fn print_devices() {
+    for device in PCI.lock().devices.iter() {
+        println!("{}", device.header)
+    }
+
+}
+//
+// pub fn get_pci_device(device_id: u16, vendor_id: u16) -> Option<PciDeviceFunction> {
+//     for device in PCI.lock().devices.iter() {
+//         if device.header.device_id == device_id && device.header.vendor_id == vendor_id &&
+//             !device.owned
+//         {
+//             return Some(device);
+//         }
+//     }
+//     None
+// }
 
 // Running under QEMU, and checking against http://pcidatabase.com/ , we have:
 //

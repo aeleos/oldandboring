@@ -1,9 +1,10 @@
 
 use self::paging::PhysicalAddress;
 use multiboot2::BootInformation;
+use allocator;
 
 pub use self::area_frame_allocator::AreaFrameAllocator;
-pub use self::paging::{test_paging, remap_the_kernel};
+pub use self::paging::{remap_the_kernel, test_paging};
 pub use self::stack_allocator::Stack;
 
 
@@ -20,7 +21,9 @@ pub struct Frame {
 
 impl Frame {
     fn containing_address(address: usize) -> Frame {
-        Frame { number: address / PAGE_SIZE }
+        Frame {
+            number: address / PAGE_SIZE,
+        }
     }
 
     fn start_address(&self) -> PhysicalAddress {
@@ -28,7 +31,9 @@ impl Frame {
     }
 
     fn clone(&self) -> Frame {
-        Frame { number: self.number }
+        Frame {
+            number: self.number,
+        }
     }
 
     fn range_inclusive(start: Frame, end: Frame) -> FrameIter {
@@ -87,9 +92,9 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
 
     let memory_map_tag = boot_info.memory_map_tag().expect("Memory map tag required");
 
-    let elf_sections_tag = boot_info.elf_sections_tag().expect(
-        "Elf-sections tag required",
-    );
+    let elf_sections_tag = boot_info
+        .elf_sections_tag()
+        .expect("Elf-sections tag required");
 
     let kernel_start = elf_sections_tag
         .sections()
@@ -126,7 +131,7 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
     let mut active_table = paging::remap_the_kernel(&mut frame_allocator, boot_info);
 
     use self::paging::Page;
-    use hole_list_allocator::{HEAP_START, HEAP_SIZE};
+    use allocator::{HEAP_SIZE, HEAP_START};
 
     let heap_start_page = Page::containing_address(HEAP_START);
     let heap_end_page = Page::containing_address(HEAP_START + HEAP_SIZE);
@@ -134,6 +139,11 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
     for page in Page::range_inclusive(heap_start_page, heap_end_page) {
         active_table.map(page, paging::WRITABLE, &mut frame_allocator);
     }
+
+    unsafe {
+        allocator::init(HEAP_START, HEAP_SIZE);
+    }
+
 
     let stack_allocator = {
         let stack_alloc_start = heap_end_page + 1;
