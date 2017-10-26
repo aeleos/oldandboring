@@ -6,16 +6,12 @@ version = "0.1.0"
 [dependencies]
 bit_field = "0.8.0"
 bitflags = "0.9.1"
-multiboot2 = "0.3.2"
+multiboot2 = { git = "https://github.com/aeleos/multiboot2-elf64" }
 once = "0.3.3"
 rlibc = "1.0"
-spin = "0.4.5"
+spin = "0.4.6"
 volatile = "0.2.3"
 x86_64 = "0.1.2"
-
-[dependencies.fringe]
-features = ["alloc"]
-git = "https://github.com/aeleos/libfringe"
 
 [dependencies.hole_list_allocator]
 path = "kernel/libs/hole_list_allocator"

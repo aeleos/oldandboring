@@ -4,7 +4,7 @@
 
 use core::fmt;
 use core::iter::Iterator;
-use spin::{Mutex, MutexGuard};
+use spin::Mutex;
 use cpuio;
 use self::headers::Header;
 use alloc::vec::Vec;
@@ -20,6 +20,7 @@ mod vga;
 struct Pci {
     address: cpuio::Port<u32>,
     data: cpuio::Port<u32>,
+    // devices: Vec<PciDeviceFunction<'a>>,
     devices: Vec<PciDeviceFunction>,
 }
 
@@ -33,15 +34,14 @@ impl Pci {
         // The slot number occupies bits 11 - 15
         // The function number occupies bits 8 - 10
         // The two least signifigant bits must be 0
-        let address: u32 = 0x80000000 | (bus as u32) << 16 | (slot as u32) << 11 |
-            (function as u32) << 8 | (offset & 0b1111_1100) as u32;
+        let address: u32 = 0x80000000 | (bus as u32) << 16 | (slot as u32) << 11
+            | (function as u32) << 8 | (offset & 0b1111_1100) as u32;
         self.address.write(address);
         self.data.read()
     }
 
     /// Check for a PCI device, and return information about it if present.
     unsafe fn probe(&mut self, bus: u8, slot: u8, function: u8) -> Option<PciDeviceFunction> {
-
         if !headers::is_valid(self.read_config_register(bus, slot, function, 0)) {
             return None;
         }
@@ -81,24 +81,32 @@ impl fmt::Display for PciDeviceFunction {
         )
     }
 }
-
-// static PCI: Mutex<Pci> = Mutex::new(Pci {
-//     address: unsafe { cpuio::Port::new(0xCF8) },
-//     data: unsafe { cpuio::Port::new(0xCFC) },
-//     devices: Vec::new(),
-// });
-
-// lazy_static! {
-//     static ref PCI_DEVICES: Mutex<Vec<Box<PciDeviceFunction>>> = Mutex::new(Vec::new());
-// }
-
 lazy_static! {
     static ref PCI: Mutex<Pci> = Mutex::new(Pci {
-            address: unsafe { cpuio::Port::new(0xCF8) },
-            data: unsafe { cpuio::Port::new(0xCFC) },
-            devices: Vec::new(),
+        address: unsafe { cpuio::Port::new(0xCF8) },
+        data: unsafe { cpuio::Port::new(0xCFC) },
+        devices: Vec::new(),
     });
 }
+
+// lazy_static! {
+//     static ref PCI_DEVICES: Mutex<Vec<PciDeviceFunction>> = Mutex::new(Vec::new());
+// }
+
+// lazy_static! {
+//     static ref PCI: Mutex<Pci<'static>> = Mutex::new(Pci {
+//             address: unsafe { cpuio::Port::new(0xCF8) },
+//             data: unsafe { cpuio::Port::new(0xCFC) },
+//             devices: PciDeviceFunctionIterator {
+//                     done: false,
+//                     bus: 0,
+//                     device: 0,
+//                     multifunction: false,
+//                     function: 0,
+//                 }.collect()
+//                 // }.map(move |e| TakeCell::new(&mut e)).collect()
+//     });
+// }
 
 
 
@@ -150,6 +158,10 @@ impl Iterator for PciDeviceFunctionIterator {
             }
 
             // Check for something at the current bus/device/function.
+            // let radio_capsule = static_init!(
+            //     capsules::ieee802154::RadioDriver<'static>,
+            //    capsules::ieee802154::RadioDriver::new(radio_mac));
+
             if let Some(result) = unsafe { pci.probe(self.bus, self.device, self.function) } {
                 // Something was found
                 // Check to see if function 0 is multifunction
@@ -163,9 +175,8 @@ impl Iterator for PciDeviceFunctionIterator {
 
                 // Return our result
                 return Some(result);
-
+            // return Some(TakeCell::new(&mut result));
             } else {
-
                 // Nothing was found, update our state and continue
                 self.update_state();
             }
@@ -187,13 +198,13 @@ pub fn pci_iter() -> PciDeviceFunctionIterator {
 
 pub fn init_pci() {
     PCI.lock().devices = pci_iter().collect();
+    // PCI.lock().devices = pci_iter().map(move |e| TakeCell::new(&mut e)).collect();
 }
 
 pub fn print_devices() {
     for device in PCI.lock().devices.iter() {
         println!("{}", device.header)
     }
-
 }
 //
 // pub fn get_pci_device(device_id: u16, vendor_id: u16) -> Option<PciDeviceFunction> {

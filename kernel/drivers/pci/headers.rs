@@ -410,7 +410,6 @@ fn get_device_description(device_class: DeviceClass, subclass: u8, prog_if: u8) 
             (0x20, 0x00) => "Management Card",
             (0x80, 0x00) => "Other Data Acquisition/Signal Processing Controller",
             (_, _) => "",
-
         },
         _ => "Unknown device description",
     }

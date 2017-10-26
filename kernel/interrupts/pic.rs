@@ -127,9 +127,9 @@ impl ChainedPics {
 
     /// Do we handle this interrupt?
     pub fn does_handle_interrupt(&self, interrupt_id: u8) -> bool {
-        self.pics.iter().any(
-            |p| p.does_handle_interrupt(interrupt_id),
-        )
+        self.pics
+            .iter()
+            .any(|p| p.does_handle_interrupt(interrupt_id))
     }
 
     pub unsafe fn notify_isr_eoi(&mut self, interrupt_id: u8) {
