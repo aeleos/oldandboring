@@ -6,7 +6,19 @@ header_start:
     ; checksum
     dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
 
+    align 8
+
+
     ; insert optional multiboot tags here
+    dw 5     ; type = 5
+    dw 0     ; flags
+    dd 20    ; size = 20
+    dd 1024 ; width
+    dd 768  ; height
+    dd 24   ; depth
+
+    align 8
+
 
     ; required end tag
     dw 0    ; type

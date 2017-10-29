@@ -27,22 +27,23 @@ extern crate once;
 use spin::Mutex;
 
 #[macro_use]
-mod vga_buffer;
+mod drivers;
+
 mod memory;
 mod interrupts;
 mod cpuio;
-mod drivers;
 mod common;
 
 static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
-    vga_buffer::clear_screen();
-    println!("Hello {} world", "rust");
+    drivers::vga::text::clear_screen();
+    drivers::serial::init();
+
+    serialln!("Hello {} world", "rust");
 
     let boot_info = unsafe { multiboot2::load(multiboot_information_address) };
-
 
 
     enable_nxe_bit();
@@ -54,7 +55,7 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
 
     let mut memory_controller = memory::init(boot_info);
-    println!("Heap and paging initialized");
+    serialln!("Heap and paging initialized");
 
     interrupts::init(&mut memory_controller);
     println!("Interrupts initialized");
@@ -64,6 +65,19 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     drivers::pci::init_pci();
 
     drivers::pci::print_devices();
+    serialln!(
+        "{:?}",
+        boot_info.vbe_info_tag().expect("no vbe info").mode()
+    );
+    // serialln!("test");
+    // println!("Boot Info: {:?}", boot_info);
+    // serialln!("{:?}", boot_info.vbe_info_tag().expect("no vbe tag").mode());
+
+
+    // for module in boot_info.module_tags() {
+    //     serialln!("Module: {}", module.name());
+    // }
+
 
     loop {}
 }
@@ -91,7 +105,7 @@ extern "C" fn eh_personality() {}
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn panic_fmt(fmt: core::fmt::Arguments, file: &'static str, line: u32) -> ! {
-    println!("\n\nPANIC in {} at line {}:", file, line);
-    println!("  {}", fmt);
+    serialln!("\n\nPANIC in {} at line {}:", file, line);
+    serialln!("  {}", fmt);
     loop {}
 }

@@ -212,7 +212,6 @@ pub fn test_paging<A: FrameAllocator>(allocator: &mut A) {
 
     page_table.unmap(Page::containing_address(addr), allocator);
     println!("None = {:?}", page_table.translate(addr));
-
 }
 
 
@@ -235,7 +234,6 @@ pub fn remap_the_kernel<A: FrameAllocator>(
             .expect("Memory map tag required");
 
         for section in elf_sections_tag.sections() {
-
             if !section.is_allocated() {
                 // section is not loaded into memory
                 continue;
@@ -261,12 +259,15 @@ pub fn remap_the_kernel<A: FrameAllocator>(
             for frame in Frame::range_inclusive(start_frame, end_frame) {
                 mapper.identity_map(frame, flags, allocator);
             }
-
         }
 
         // identity map the VGA text buffer
-        let vga_buffer_frame = Frame::containing_address(0xb8000);
-        mapper.identity_map(vga_buffer_frame, WRITABLE, allocator);
+        let vga_text_buffer_frame = Frame::containing_address(0xb8000);
+        mapper.identity_map(vga_text_buffer_frame, WRITABLE, allocator);
+
+        // indentity map the VGA video buffer
+        let vga_video_buffer_frame = Frame::containing_address(0xA0000);
+        mapper.identity_map(vga_video_buffer_frame, WRITABLE, allocator);
 
         // identity map the multiboot info structure
         let multiboot_start = Frame::containing_address(boot_info.start_address());
@@ -274,7 +275,6 @@ pub fn remap_the_kernel<A: FrameAllocator>(
         for frame in Frame::range_inclusive(multiboot_start, multiboot_end) {
             mapper.identity_map(frame, PRESENT, allocator);
         }
-
     });
 
     let old_table = active_table.switch(new_table);

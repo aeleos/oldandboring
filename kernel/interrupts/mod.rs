@@ -92,7 +92,6 @@ pub fn init(memory_controller: &mut MemoryController) {
         pit::initialize();
         interrupts::enable();
     }
-
 }
 
 extern "x86-interrupt" fn irq_handler(stack_frame: &mut ExceptionStackFrame) {

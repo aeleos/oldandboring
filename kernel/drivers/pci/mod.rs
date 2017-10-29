@@ -15,7 +15,6 @@ use alloc::vec::Vec;
 
 
 pub mod headers;
-mod vga;
 
 struct Pci {
     address: cpuio::Port<u32>,
