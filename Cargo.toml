@@ -6,7 +6,6 @@ version = "0.1.0"
 [dependencies]
 bit_field = "0.8.0"
 bitflags = "0.9.1"
-multiboot2 = { git = "https://github.com/aeleos/multiboot2-elf64" }
 once = "0.3.3"
 rlibc = "1.0"
 spin = "0.4.6"
@@ -15,6 +14,9 @@ x86_64 = "0.1.2"
 
 [dependencies.hole_list_allocator]
 path = "kernel/libs/hole_list_allocator"
+
+[dependencies.multiboot2]
+path = "kernel/libs/multiboot2-elf64"
 
 [dependencies.lazy_static]
 features = ["spin_no_std"]

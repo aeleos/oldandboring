@@ -1,3 +1,8 @@
 Hello rust world
+addr = 45097156608, None = None, map to Frame { number: 39 }
+Some = Some(159744)
+next free frame: Some(Frame { number: 42 })
+0x0
+None = None
 Heap and paging initialized
-mode: 1024x1024x32
+VbeInfoTag { typ: 7, size: 784, vbe_mode: 0x4142, is_vesa: false, vbe_interface_seg: 65535, vbe_interface_off: 24576, vbe_interface_len: 79, control_info: video_modes: 1610645538, video_memory: 256, mode_info: address: 0xFD000000, mode:640x640x32, pitch: 2560, planes: 1, framebuffer: 0x0xfd000000red_mask: 8, red_position: 16green_mask: 8, green_position: 8blue_mask: 8, blue_position: 0 }

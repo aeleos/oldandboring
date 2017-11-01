@@ -65,14 +65,13 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     drivers::pci::init_pci();
 
     drivers::pci::print_devices();
-    serialln!(
-        "{:?}",
-        boot_info.vbe_info_tag().expect("no vbe info").mode()
-    );
-    // serialln!("test");
-    // println!("Boot Info: {:?}", boot_info);
-    // serialln!("{:?}", boot_info.vbe_info_tag().expect("no vbe tag").mode());
 
+    // println!("Boot Info: {:?}", boot_info);
+    drivers::vga::video::init();
+
+    serialln!("{:?}", boot_info.fb_info_tag().expect("no vbe info"));
+    // serialln!("test");
+    // serialln!("{:?}", boot_info.vbe_info_tag().expect("no vbe tag").mode());
 
     // for module in boot_info.module_tags() {
     //     serialln!("Module: {}", module.name());

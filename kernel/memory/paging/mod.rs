@@ -196,22 +196,23 @@ pub fn test_paging<A: FrameAllocator>(allocator: &mut A) {
     let addr = 42 * 512 * 512 * 4096;
     let page = Page::containing_address(addr);
     let frame = allocator.allocate_frame().expect("no more frames");
-    println!(
-        "None = {:?}, map to {:?}",
+    serialln!(
+        "addr = {}, None = {:?}, map to {:?}",
+        addr,
         page_table.translate(addr),
         frame
     );
     page_table.map_to(page, frame, EntryFlags::empty(), allocator);
-    println!("Some = {:?}", page_table.translate(addr));
-    println!("next free frame: {:?}", allocator.allocate_frame());
+    serialln!("Some = {:?}", page_table.translate(addr));
+    serialln!("next free frame: {:?}", allocator.allocate_frame());
 
-    println!("{:#x}", unsafe {
+    serialln!("{:#x}", unsafe {
         *(Page::containing_address(addr).start_address() as *const u64)
     });
 
 
     page_table.unmap(Page::containing_address(addr), allocator);
-    println!("None = {:?}", page_table.translate(addr));
+    serialln!("None = {:?}", page_table.translate(addr));
 }
 
 
@@ -266,8 +267,11 @@ pub fn remap_the_kernel<A: FrameAllocator>(
         mapper.identity_map(vga_text_buffer_frame, WRITABLE, allocator);
 
         // indentity map the VGA video buffer
-        let vga_video_buffer_frame = Frame::containing_address(0xA0000);
-        mapper.identity_map(vga_video_buffer_frame, WRITABLE, allocator);
+        let vbe_buffer_start_frame = Frame::containing_address(0xFD000000);
+        let vbe_buffer_end_frame = Frame::containing_address(0xFD000000 + 10000000);
+        for frame in Frame::range_inclusive(vbe_buffer_start_frame, vbe_buffer_end_frame) {
+            mapper.identity_map(frame, WRITABLE, allocator);
+        }
 
         // identity map the multiboot info structure
         let multiboot_start = Frame::containing_address(boot_info.start_address());

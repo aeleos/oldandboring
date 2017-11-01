@@ -13,9 +13,9 @@ header_start:
     dw 5     ; type = 5
     dw 0     ; flags
     dd 20    ; size = 20
-    dd 1024 ; width
-    dd 768  ; height
-    dd 24   ; depth
+    dd 0 ; width
+    dd 0  ; height
+    dd 0   ; depth
 
     align 8
 

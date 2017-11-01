@@ -119,7 +119,7 @@ extern "x86-interrupt" fn irq_no_func_handler(stack_frame: &mut ExceptionStackFr
 
 #[allow(unused_variables)]
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut ExceptionStackFrame) {
-    println!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame);
+    serialln!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame);
 }
 
 #[allow(unused_variables)]
@@ -127,6 +127,6 @@ extern "x86-interrupt" fn double_fault_handler(
     stack_frame: &mut ExceptionStackFrame,
     _error_code: u64,
 ) {
-    println!("\nEXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
+    serialln!("\nEXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
     loop {}
 }

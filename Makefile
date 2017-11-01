@@ -18,10 +18,10 @@ clean:
 	@rm -r build
 
 run: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso) -s -serial file:serial.log
+	@qemu-system-x86_64 -cdrom $(iso) -s -serial stdio -vga std
 
 debug: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso) -s -S
+	@qemu-system-x86_64 -cdrom $(iso) -s -S -d int
 
 iso: $(iso)
 

@@ -144,13 +144,15 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
         allocator::init(HEAP_START, HEAP_SIZE);
     }
 
-
     let stack_allocator = {
         let stack_alloc_start = heap_end_page + 1;
         let stack_alloc_end = stack_alloc_start + 100;
         let stack_alloc_range = Page::range_inclusive(stack_alloc_start, stack_alloc_end);
         stack_allocator::StackAllocator::new(stack_alloc_range)
     };
+
+    test_paging(&mut frame_allocator);
+
 
     MemoryController {
         active_table: active_table,
