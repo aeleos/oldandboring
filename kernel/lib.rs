@@ -24,7 +24,7 @@ extern crate lazy_static;
 extern crate once;
 
 
-use spin::Mutex;
+use spin::{Mutex, Once};
 
 #[macro_use]
 mod drivers;
@@ -36,6 +36,13 @@ mod common;
 
 static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
+static BOOT_INFO: Once<&multiboot2::BootInformation> = Once::new();
+
+lazy_static! {
+    static ref MEMORY_CONTROLLER: Mutex<memory::MemoryController> = Mutex::new(memory::init());
+}
+
+
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
     drivers::vga::text::clear_screen();
@@ -43,25 +50,22 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     serialln!("Hello {} world", "rust");
 
-    let boot_info = unsafe { multiboot2::load(multiboot_information_address) };
+    let boot_info = BOOT_INFO.call_once(|| unsafe {
+        multiboot2::load(multiboot_information_address)
+    });
 
+    serialln!("Multiboot information initialized");
 
     enable_nxe_bit();
     enable_write_protect_bit();
 
-    // let information = cupid::master();
-    // println!("{:#?}".information);
-    // drivers::vesa::init();
-
-
-    let mut memory_controller = memory::init(boot_info);
+    lazy_static::initialize(&MEMORY_CONTROLLER);
     serialln!("Heap and paging initialized");
 
-    interrupts::init(&mut memory_controller);
-    println!("Interrupts initialized");
+    interrupts::init();
+    serialln!("Interrupts initialized");
 
-    println!("Scanning PCI bus...");
-
+    serialln!("Scanning PCI bus...");
     drivers::pci::init_pci();
 
     drivers::pci::print_devices();

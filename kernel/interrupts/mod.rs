@@ -1,10 +1,11 @@
 pub use x86_64::structures::idt::{ExceptionStackFrame, HandlerFunc, Idt};
 use x86_64::structures::tss::TaskStateSegment;
 use x86_64::VirtualAddress;
-use memory::MemoryController;
 
 use spin::Once;
 use drivers;
+
+use super::MEMORY_CONTROLLER;
 
 mod gdt;
 mod pic;
@@ -47,11 +48,13 @@ lazy_static! {
 static TSS: Once<TaskStateSegment> = Once::new();
 static GDT: Once<gdt::Gdt> = Once::new();
 
-pub fn init(memory_controller: &mut MemoryController) {
+pub fn init() {
     use x86_64::structures::gdt::SegmentSelector;
     use x86_64::instructions::segmentation::set_cs;
     use x86_64::instructions::tables::load_tss;
     use x86_64::instructions::interrupts;
+
+    let mut memory_controller = MEMORY_CONTROLLER.lock();
 
     let double_fault_stack = memory_controller
         .alloc_stack(1)

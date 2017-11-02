@@ -71,6 +71,18 @@ impl Writer {
 }
 
 pub fn init() {
+    use memory::paging;
+    use MEMORY_CONTROLLER;
+
+    // let mut active_table = &MEMORY_CONTROLLER.lock().active_table;
+    let mut memory_controller = MEMORY_CONTROLLER.lock();
+    // let mut frame_allocator =
+    // indentity map the VGA video buffer
+    for frame in memory_controller.frame_range_inclusive(0xFD000000, 0xFD000000 + 10000000) {
+        memory_controller.identity_map(frame, paging::WRITABLE);
+    }
+
+
     let mut writer = Writer::new(0xFD000000);
     for i in 0..768 {
         writer.putpixel(i, i, 0xffffff);

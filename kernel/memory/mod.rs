@@ -1,15 +1,15 @@
 
 use self::paging::PhysicalAddress;
-use multiboot2::BootInformation;
 use allocator;
 
 pub use self::area_frame_allocator::AreaFrameAllocator;
-pub use self::paging::{remap_the_kernel, test_paging};
+pub use self::paging::{remap_the_kernel, test_paging, Page};
 pub use self::stack_allocator::Stack;
 
+use super::BOOT_INFO;
 
 mod area_frame_allocator;
-mod paging;
+pub mod paging;
 mod stack_allocator;
 
 pub const PAGE_SIZE: usize = 4096;
@@ -20,7 +20,7 @@ pub struct Frame {
 }
 
 impl Frame {
-    fn containing_address(address: usize) -> Frame {
+    pub fn containing_address(address: usize) -> Frame {
         Frame {
             number: address / PAGE_SIZE,
         }
@@ -36,7 +36,7 @@ impl Frame {
         }
     }
 
-    fn range_inclusive(start: Frame, end: Frame) -> FrameIter {
+    pub fn range_inclusive(start: Frame, end: Frame) -> FrameIter {
         FrameIter {
             start: start,
             end: end,
@@ -44,7 +44,7 @@ impl Frame {
     }
 }
 
-struct FrameIter {
+pub struct FrameIter {
     start: Frame,
     end: Frame,
 }
@@ -84,11 +84,40 @@ impl MemoryController {
         } = self;
         stack_allocator.alloc_stack(active_table, frame_allocator, size_in_pages)
     }
+
+    pub fn map_to(&mut self, page: Page, frame: Frame, flags: paging::EntryFlags) {
+        self.active_table
+            .map_to(page, frame, flags, &mut self.frame_allocator)
+    }
+
+
+    pub fn map(&mut self, page: Page, flags: paging::EntryFlags) {
+        self.active_table
+            .map(page, flags, &mut self.frame_allocator)
+    }
+
+    pub fn identity_map(&mut self, frame: Frame, flags: paging::EntryFlags) {
+        self.active_table
+            .identity_map(frame, flags, &mut self.frame_allocator)
+    }
+
+    pub fn unmap(&mut self, page: Page) {
+        self.active_table.unmap(page, &mut self.frame_allocator)
+    }
+
+
+    pub fn frame_range_inclusive(&self, start_address: usize, end_address: usize) -> FrameIter {
+        let start_frame = Frame::containing_address(start_address);
+        let end_frame = Frame::containing_address(end_address);
+        Frame::range_inclusive(start_frame, end_frame)
+    }
 }
 
 
-pub fn init(boot_info: &BootInformation) -> MemoryController {
+pub fn init() -> MemoryController {
     assert_has_not_been_called!("memory::init can only be called once");
+
+    let boot_info = BOOT_INFO.try().unwrap();
 
     let memory_map_tag = boot_info.memory_map_tag().expect("Memory map tag required");
 
@@ -109,12 +138,12 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
         .max()
         .unwrap();
 
-    println!(
+    serialln!(
         "kernel start: 0x{:#x}, kernel end: 0x{:#x}",
         kernel_start,
         kernel_end
     );
-    println!(
+    serialln!(
         "multiboot start: 0x{:#x}, multiboot end: 0x{:#x}",
         boot_info.start_address(),
         boot_info.end_address()
@@ -128,9 +157,8 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
         memory_map_tag.memory_areas(),
     );
 
-    let mut active_table = paging::remap_the_kernel(&mut frame_allocator, boot_info);
+    let mut active_table = paging::remap_the_kernel(&mut frame_allocator, &boot_info);
 
-    use self::paging::Page;
     use allocator::{HEAP_SIZE, HEAP_START};
 
     let heap_start_page = Page::containing_address(HEAP_START);
@@ -150,9 +178,6 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
         let stack_alloc_range = Page::range_inclusive(stack_alloc_start, stack_alloc_end);
         stack_allocator::StackAllocator::new(stack_alloc_range)
     };
-
-    test_paging(&mut frame_allocator);
-
 
     MemoryController {
         active_table: active_table,

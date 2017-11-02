@@ -10,7 +10,7 @@ use core::ops::{Add, Deref, DerefMut};
 use multiboot2::BootInformation;
 
 
-mod entry;
+pub mod entry;
 mod table;
 mod temporary_page;
 mod mapper;
@@ -265,13 +265,6 @@ pub fn remap_the_kernel<A: FrameAllocator>(
         // identity map the VGA text buffer
         let vga_text_buffer_frame = Frame::containing_address(0xb8000);
         mapper.identity_map(vga_text_buffer_frame, WRITABLE, allocator);
-
-        // indentity map the VGA video buffer
-        let vbe_buffer_start_frame = Frame::containing_address(0xFD000000);
-        let vbe_buffer_end_frame = Frame::containing_address(0xFD000000 + 10000000);
-        for frame in Frame::range_inclusive(vbe_buffer_start_frame, vbe_buffer_end_frame) {
-            mapper.identity_map(frame, WRITABLE, allocator);
-        }
 
         // identity map the multiboot info structure
         let multiboot_start = Frame::containing_address(boot_info.start_address());
