@@ -29,25 +29,24 @@ use spin::{Mutex, Once};
 use core::mem;
 
 #[macro_use]
+pub mod macros;
+
 mod drivers;
 
 mod memory;
-mod interrupts;
+mod arch;
 mod cpuio;
 mod common;
+mod sync;
 
 static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
 static BOOT_INFO: Once<&multiboot2::BootInformation> = Once::new();
 
-lazy_static! {
-    static ref MEMORY_CONTROLLER: Mutex<memory::MemoryController> = Mutex::new(memory::init());
-}
-
 
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
-    drivers::vga::text::clear_screen();
+    // drivers::vga::text::clear_screen();
     drivers::serial::init();
 
     debugln!("Hello {} world", "rust");
@@ -61,10 +60,10 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     enable_nxe_bit();
     enable_write_protect_bit();
 
-    lazy_static::initialize(&MEMORY_CONTROLLER);
+    lazy_static::initialize(&memory::MEMORY_CONTROLLER);
     debugln!("Heap and paging initialized");
 
-    interrupts::init();
+    arch::init();
     debugln!("Interrupts initialized");
 
     debugln!("Scanning PCI bus...");
@@ -77,7 +76,7 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
 
 
-    drivers::vga::video::init();
+    // drivers::vga::video::init();
 
     // debugln!("test");
     // debugln!("{:?}", boot_info.vbe_info_tag().expect("no vbe tag").mode());

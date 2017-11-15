@@ -4,7 +4,7 @@ version = "0.1.0"
 dependencies = [
  "bit_field 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "compiler_builtins 0.1.0",
+ "compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)",
  "hole_list_allocator 0.1.0",
  "lazy_static 0.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "multiboot2 0.3.2",
@@ -38,6 +38,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "compiler_builtins"
 version = "0.1.0"
+source = "git+https://github.com/rust-lang-nursery/compiler-builtins#93e3091ffc50e1f361214a975fd8747ef617d346"
 
 [[package]]
 name = "hole_list_allocator"
@@ -104,6 +105,7 @@ dependencies = [
 "checksum bit_field 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5f82981c3dcf3b924f94c53663335140e8c95a781ce72c1c676c9bc98e18e649"
 "checksum bitflags 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8dead7461c1127cf637931a1e50934eb6eee8bff2f74433ac7909e9afcee04a3"
 "checksum bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4efd02e230a02e18f92fc2735f44597385ed02ad8f831e7c1c1156ee5e1ab3a5"
+"checksum compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)" = "<none>"
 "checksum lazy_static 0.2.9 (registry+https://github.com/rust-lang/crates.io-index)" = "c9e5e58fa1a4c3b915a561a78a22ee0cac6ab97dca2504428bc1cb074375f8d5"
 "checksum linked_list_allocator 0.4.2 (git+https://github.com/phil-opp/linked-list-allocator)" = "<none>"
 "checksum once 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "931fb7a4cf34610cf6cbe58d52a8ca5ef4c726d4e2e178abd0dc13a6551c6d73"

@@ -202,7 +202,7 @@ pub fn init_pci() {
 
 pub fn print_devices() {
     for device in PCI.lock().devices.iter() {
-        println!("{}", device.header)
+        debugln!("{}", device.header)
     }
 }
 //

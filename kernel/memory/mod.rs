@@ -8,11 +8,18 @@ pub use self::stack_allocator::Stack;
 
 use super::BOOT_INFO;
 
+use spin::Mutex;
+
 mod area_frame_allocator;
 pub mod paging;
 mod stack_allocator;
 
 pub const PAGE_SIZE: usize = 4096;
+
+lazy_static! {
+    pub static ref MEMORY_CONTROLLER: Mutex<MemoryController> = Mutex::new(init());
+}
+
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Frame {

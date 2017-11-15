@@ -6,9 +6,9 @@ rust_os := target/$(target)/debug/libboring_os.a
 
 linker_script := kernel/arch/$(arch)/linker.ld
 grub_cfg := kernel/arch/$(arch)/grub.cfg
-assembly_source_files := $(wildcard kernel/arch/$(arch)/*.asm)
-assembly_object_files := $(patsubst kernel/arch/$(arch)/%.asm, \
-	build/arch/$(arch)/%.o, $(assembly_source_files))
+assembly_source_files := $(wildcard kernel/arch/$(arch)/boot/*.asm)
+assembly_object_files := $(patsubst kernel/arch/$(arch)/boot/%.asm, \
+	build/arch/$(arch)/boot/%.o, $(assembly_source_files))
 
 .PHONY: all clean run iso kernel
 
