@@ -11,13 +11,13 @@ macro_rules! println {
 }
 
 
-macro_rules! serial {
+macro_rules! debug {
     ($($arg:tt)*) => ({
         $crate::drivers::serial::print(format_args!($($arg)*));
     });
 }
 
-macro_rules! serialln {
-    ($fmt:expr) => (serial!(concat!($fmt, "\n")));
-    ($fmt:expr, $($arg:tt)*) => (serial!(concat!($fmt, "\n"), $($arg)*));
+macro_rules! debugln {
+    ($fmt:expr) => (debug!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (debug!(concat!($fmt, "\n"), $($arg)*));
 }

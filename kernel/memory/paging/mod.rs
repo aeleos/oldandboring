@@ -196,23 +196,23 @@ pub fn test_paging<A: FrameAllocator>(allocator: &mut A) {
     let addr = 42 * 512 * 512 * 4096;
     let page = Page::containing_address(addr);
     let frame = allocator.allocate_frame().expect("no more frames");
-    serialln!(
+    debugln!(
         "addr = {}, None = {:?}, map to {:?}",
         addr,
         page_table.translate(addr),
         frame
     );
     page_table.map_to(page, frame, EntryFlags::empty(), allocator);
-    serialln!("Some = {:?}", page_table.translate(addr));
-    serialln!("next free frame: {:?}", allocator.allocate_frame());
+    debugln!("Some = {:?}", page_table.translate(addr));
+    debugln!("next free frame: {:?}", allocator.allocate_frame());
 
-    serialln!("{:#x}", unsafe {
+    debugln!("{:#x}", unsafe {
         *(Page::containing_address(addr).start_address() as *const u64)
     });
 
 
     page_table.unmap(Page::containing_address(addr), allocator);
-    serialln!("None = {:?}", page_table.translate(addr));
+    debugln!("None = {:?}", page_table.translate(addr));
 }
 
 

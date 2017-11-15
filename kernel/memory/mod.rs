@@ -138,12 +138,12 @@ pub fn init() -> MemoryController {
         .max()
         .unwrap();
 
-    serialln!(
+    debugln!(
         "kernel start: 0x{:#x}, kernel end: 0x{:#x}",
         kernel_start,
         kernel_end
     );
-    serialln!(
+    debugln!(
         "multiboot start: 0x{:#x}, multiboot end: 0x{:#x}",
         boot_info.start_address(),
         boot_info.end_address()

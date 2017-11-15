@@ -4,6 +4,7 @@ version = "0.1.0"
 dependencies = [
  "bit_field 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "compiler_builtins 0.1.0",
  "hole_list_allocator 0.1.0",
  "lazy_static 0.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "multiboot2 0.3.2",
@@ -33,6 +34,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "bitflags"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "compiler_builtins"
+version = "0.1.0"
 
 [[package]]
 name = "hole_list_allocator"
