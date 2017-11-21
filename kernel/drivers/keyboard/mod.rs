@@ -1,12 +1,13 @@
 use cpuio::UnsafePort;
 use alloc::boxed::Box;
+use spin::Mutex;
 
 pub mod ps2;
 
 /// A pair of keys which appears on both the left and right side
 /// of the keyboard, ex. left shift, right shift
 #[derive(Debug, Clone, Copy)]
-struct Keypair {
+pub struct Keypair {
     left: bool,
     right: bool,
 }
@@ -34,7 +35,7 @@ impl Keypair {
     }
 }
 
-trait Keyboard {
+pub trait Keyboard {
     fn new() -> Self;
 
     fn shift(&self) -> Keypair;
@@ -70,7 +71,7 @@ trait Keyboard {
     }
 }
 
-struct KeyboardHandler<K: Keyboard> {
+pub struct KeyboardHandler<K: Keyboard> {
     port: UnsafePort<u8>,
     keyboard: K,
 }
@@ -92,4 +93,27 @@ impl<K: Keyboard> KeyboardHandler<K> {
         let scancode = self.read();
         self.keyboard.update(scancode);
     }
+
+    pub fn handle_irq(&mut self) {
+        self.update();
+        if self.keyboard.should_print_key() {
+            if let Some(ascii) = self.keyboard.get_ascii(true) {
+                if ascii as char == '\r' {
+                    println!("");
+                    return;
+                }
+                print!("{}", ascii as char);
+
+            }
+        }
+
+    }
+
+}
+
+
+lazy_static! {
+    pub static ref KB_HANDLER: Mutex<Box<KeyboardHandler<ps2::PS2>>> = Mutex::new(unsafe {
+        KeyboardHandler::new()
+    });
 }

@@ -97,6 +97,19 @@ impl Mapper {
 
     }
 
+    pub fn map_page_at<A: FrameAllocator>(
+        &mut self,
+        virtual_address: VirtualAddress,
+        physical_address: PhysicalAddress,
+        flags: EntryFlags,
+        allocator: &mut A,
+    ) {
+        let frame = Frame::containing_address(physical_address);
+        let page = Page::containing_address(virtual_address);
+        self.map_to(page, frame, flags, allocator);
+    }
+
+
     // Identity map the given frame with the provided flags
     // The `FrameAllocator` is used to create new page
     // tables if needed
@@ -107,7 +120,7 @@ impl Mapper {
         allocator: &mut A,
     ) {
         let page = Page::containing_address(frame.start_address());
-        self.map_to(page, frame, flags, allocator)
+        self.map_to(page, frame, flags, allocator);
     }
 
     // Unmaps the given page and adds all freed frames

@@ -1,8 +1,6 @@
-use drivers::keyboard::{Keyboard, KeyboardHandler, Keypair};
-use spin::Mutex;
-use alloc::boxed::Box;
+use drivers::keyboard::{Keyboard, Keypair};
 
-struct PS2 {
+pub struct PS2 {
     shift: Keypair,
     control: Keypair,
     alt: Keypair,
@@ -85,30 +83,4 @@ impl Keyboard for PS2 {
         }
 
     }
-}
-
-
-lazy_static! {
-    static ref KB_HANDLER: Mutex<Box<KeyboardHandler<PS2>>> = Mutex::new(unsafe {
-        KeyboardHandler::new()
-    });
-
-}
-
-pub fn irq_handler() {
-    let handler = &mut KB_HANDLER.lock();
-
-    handler.update();
-
-    if handler.keyboard.should_print_key() {
-        if let Some(ascii) = handler.keyboard.get_ascii(true) {
-            if ascii as char == '\r' {
-                println!("");
-                return;
-            }
-            print!("{}", ascii as char);
-
-        }
-    }
-
 }

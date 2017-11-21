@@ -7,8 +7,6 @@ header_start:
     dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
 
     align 8
-
-
     ; insert optional multiboot tags here
     dw 5     ; type = 5
     dw 0     ; flags
@@ -16,7 +14,6 @@ header_start:
     dd 0 ; width
     dd 0  ; height
     dd 0   ; depth
-
     align 8
 
 

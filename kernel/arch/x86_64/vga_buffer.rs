@@ -134,11 +134,6 @@ pub static WRITER: Mutex<Writer> = Mutex::new(Writer {
     buffer: unsafe { Unique::new_unchecked(0xb8000 as *mut _) },
 });
 
-// pub fn print(args: fmt::Arguments) {
-//     use core::fmt::Write;
-//     WRITER.lock().write_fmt(args).unwrap();
-// }
-
 
 pub fn clear_screen() {
     for _ in 0..BUFFER_HEIGHT {

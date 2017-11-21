@@ -4,10 +4,6 @@ use core::marker::Copy;
 
 use core::mem::size_of;
 
-use spin::Mutex;
-
-use core::intrinsics::exp2f64;
-
 use BOOT_INFO;
 
 #[derive(Debug, Clone, Copy)]
@@ -56,8 +52,7 @@ where
     }
 
     fn init(&self) {
-        use memory::paging;
-        use MEMORY_CONTROLLER;
+        use memory::{paging, MEMORY_CONTROLLER};
 
         let mut memory_controller = MEMORY_CONTROLLER.lock();
 
@@ -139,7 +134,6 @@ pub fn init() {
 
                 new_re = 0.0;
                 new_im = 0.0;
-                old_im = 0.0;
                 let mut q: i32 = 0;
                 for i in 0..max_iter {
                     q = i;
@@ -150,7 +144,6 @@ pub fn init() {
                     new_im = 2.0 * old_re * old_im + pi;
 
                     if (new_re * new_re + new_im * new_im) as u64 > 4 {
-                        // debugln!("here: {}", (new_re * new_re + new_im * new_im));
                         break;
                     }
                 }
@@ -182,47 +175,3 @@ pub fn init() {
     //     writer.putpixel(i + 768, i, 0xffffff);
     // }
 }
-//
-// #[no_mangle]
-// pub extern "C" fn __addsf3() {
-//     loop {}
-// }
-//
-// #[no_mangle]
-// pub extern "C" fn __floatunsisf() {
-//     loop {}
-// }
-//
-// #[no_mangle]
-// pub extern "C" fn __mulsf3() {
-//     loop {}
-// }
-//
-// #[no_mangle]
-// pub extern "C" fn __gtsf2() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __divsf3() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __subsf3() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __addsf3() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __addsf3() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __addsf3() {
-//     loop {}
-// }
-// #[no_mangle]
-// pub extern "C" fn __addsf3() {
-//     loop {}
-// }

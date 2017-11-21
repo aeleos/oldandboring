@@ -21,9 +21,14 @@ run: $(iso)
 	@qemu-system-x86_64 -cdrom $(iso) -s -serial stdio -vga std
 
 debug: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso) -s -S -d int
+	@qemu-system-x86_64 -cdrom $(iso) -s -S -d int -no-reboot
+
+gdb:
+  @rust-os-gdb/bin/rust-gdb "build/kernel-x86_64.bin" -ex "target remote :1234"
 
 iso: $(iso)
+
+
 
 $(iso): $(kernel) $(grub_cfg)
 	@mkdir -p build/isofiles/boot/grub

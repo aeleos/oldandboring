@@ -1,9 +1,7 @@
-
-use self::paging::PhysicalAddress;
 use allocator;
-
+pub use self::paging::{PhysicalAddress, VirtualAddress};
+pub use self::paging::{remap_the_kernel, test_paging, EntryFlags, Page};
 pub use self::area_frame_allocator::AreaFrameAllocator;
-pub use self::paging::{remap_the_kernel, test_paging, Page};
 pub use self::stack_allocator::Stack;
 
 use super::BOOT_INFO;
@@ -92,24 +90,33 @@ impl MemoryController {
         stack_allocator.alloc_stack(active_table, frame_allocator, size_in_pages)
     }
 
-    pub fn map_to(&mut self, page: Page, frame: Frame, flags: paging::EntryFlags) {
+    pub fn map_to(&mut self, page: Page, frame: Frame, flags: EntryFlags) {
         self.active_table
             .map_to(page, frame, flags, &mut self.frame_allocator)
     }
 
 
-    pub fn map(&mut self, page: Page, flags: paging::EntryFlags) {
+    pub fn map(&mut self, page: Page, flags: EntryFlags) {
         self.active_table
             .map(page, flags, &mut self.frame_allocator)
     }
 
-    pub fn identity_map(&mut self, frame: Frame, flags: paging::EntryFlags) {
+    pub fn identity_map(&mut self, frame: Frame, flags: EntryFlags) {
         self.active_table
             .identity_map(frame, flags, &mut self.frame_allocator)
     }
 
     pub fn unmap(&mut self, page: Page) {
         self.active_table.unmap(page, &mut self.frame_allocator)
+    }
+
+    pub fn map_page_at(
+        &mut self,
+        virtual_address: VirtualAddress,
+        physical_address: PhysicalAddress,
+        flags: EntryFlags,
+    ) {
+        self.active_table.map_page_at(virtual_address, physical_address, flags, &mut self.frame_allocator);
     }
 
 

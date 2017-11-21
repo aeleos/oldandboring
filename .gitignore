@@ -22,6 +22,10 @@
 *.la
 *.lo
 
+*.bin
+*.iso
+
+
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
@@ -99,3 +103,5 @@ target/*
 
 
 build/*
+
+Cargo.lock

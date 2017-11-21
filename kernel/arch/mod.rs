@@ -7,8 +7,8 @@ macro_rules! export_arch {
     ($name: ident) => {
         // pub use self::$name::early_init;
         pub use self::$name::init;
-        // pub use self::$name::get_cpu_id;
-        // pub use self::$name::get_cpu_num;
+        pub use self::$name::get_cpu_id;
+        pub use self::$name::get_cpu_num;
         // pub use self::$name::schedule;
         // pub use self::$name::enter_first_thread;
         // pub use self::$name::Context;
@@ -66,10 +66,7 @@ mod x86_64;
 pub fn write_fmt(args: fmt::Arguments) {
     if cfg!(target_arch = "x86_64") {
         use core::fmt::Write;
-        x86_64::vga_buffer::WRITER
-            .lock()
-            .write_fmt(args)
-            .unwrap();
+        x86_64::vga_buffer::WRITER.lock().write_fmt(args).unwrap();
     }
 }
 
