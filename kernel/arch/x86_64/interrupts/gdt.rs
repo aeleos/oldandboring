@@ -49,7 +49,7 @@ impl Gdt {
     }
 
     pub fn load(&'static self) {
-        use x86_64::instructions::tables::{DescriptorTablePointer, lgdt};
+        use x86_64::instructions::tables::{lgdt, DescriptorTablePointer};
         use core::mem::size_of;
 
         let ptr = DescriptorTablePointer {

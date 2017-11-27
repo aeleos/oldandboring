@@ -103,12 +103,9 @@ impl<K: Keyboard> KeyboardHandler<K> {
                     return;
                 }
                 print!("{}", ascii as char);
-
             }
         }
-
     }
-
 }
 
 

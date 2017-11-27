@@ -1,7 +1,7 @@
-use super::{VirtualAddress, PhysicalAddress, Page, ENTRY_COUNT};
+use super::{Page, PhysicalAddress, VirtualAddress, ENTRY_COUNT};
 use super::entry::*;
-use super::table::{self, Table, Level4};
-use memory::{PAGE_SIZE, Frame, FrameAllocator};
+use super::table::{self, Level4, Table};
+use memory::{Frame, FrameAllocator, PAGE_SIZE};
 use core::ptr::Unique;
 
 
@@ -11,7 +11,9 @@ pub struct Mapper {
 
 impl Mapper {
     pub unsafe fn new() -> Mapper {
-        Mapper { p4: Unique::new_unchecked(table::P4) }
+        Mapper {
+            p4: Unique::new_unchecked(table::P4),
+        }
     }
 
     pub fn p4(&self) -> &Table<Level4> {
@@ -42,8 +44,8 @@ impl Mapper {
                     if p3_entry.flags().contains(HUGE_PAGE) {
                         assert!(start_frame.number % (ENTRY_COUNT * ENTRY_COUNT) == 0);
                         return Some(Frame {
-                            number: start_frame.number + page.p2_index() * ENTRY_COUNT +
-                                page.p1_index(),
+                            number: start_frame.number + page.p2_index() * ENTRY_COUNT
+                                + page.p1_index(),
                         });
                     }
                 }
@@ -54,7 +56,9 @@ impl Mapper {
                     if let Some(start_frame) = p2_entry.pointed_frame() {
                         if p2_entry.flags().contains(HUGE_PAGE) {
                             assert!(start_frame.number % ENTRY_COUNT == 0);
-                            return Some(Frame { number: start_frame.number + page.p1_index() });
+                            return Some(Frame {
+                                number: start_frame.number + page.p1_index(),
+                            });
                         }
                     }
                 }
@@ -94,7 +98,6 @@ impl Mapper {
     pub fn map<A: FrameAllocator>(&mut self, page: Page, flags: EntryFlags, allocator: &mut A) {
         let frame = allocator.allocate_frame().expect("out of memory");
         self.map_to(page, frame, flags, allocator)
-
     }
 
     pub fn map_page_at<A: FrameAllocator>(

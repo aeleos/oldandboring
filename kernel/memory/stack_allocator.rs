@@ -1,5 +1,5 @@
-use memory::paging::{self, Page, ActivePageTable, PageIter};
-use memory::{PAGE_SIZE, FrameAllocator};
+use memory::paging::{self, ActivePageTable, Page, PageIter};
+use memory::{FrameAllocator, PAGE_SIZE};
 
 
 pub struct StackAllocator {
@@ -17,7 +17,6 @@ impl StackAllocator {
         frame_allocator: &mut FA,
         size_in_pages: usize,
     ) -> Option<Stack> {
-
         if size_in_pages == 0 {
             return None; // Zero sized stack makes no sense
         }
@@ -51,8 +50,6 @@ impl StackAllocator {
             }
             _ => None, //Not enougn pages
         }
-
-
     }
 }
 

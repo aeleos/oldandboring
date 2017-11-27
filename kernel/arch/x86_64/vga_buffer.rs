@@ -1,4 +1,3 @@
-
 use volatile::Volatile;
 
 use core::fmt;

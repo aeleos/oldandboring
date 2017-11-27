@@ -8,18 +8,22 @@ use arch;
 #[derive(Default)]
 pub struct PreemptionState {
     /// Saves whether interrupts were enabled, when preemtion was disabled.
-    interrupts_enabled: bool
+    interrupts_enabled: bool,
 }
 
 impl PreemptionState {
     /// Reads the current state of preemption.
     fn new() -> PreemptionState {
-        PreemptionState { interrupts_enabled: arch::interrupts_enabled() }
+        PreemptionState {
+            interrupts_enabled: arch::interrupts_enabled(),
+        }
     }
 
     /// Statically returns a default preemption state.
     const fn default() -> PreemptionState {
-        PreemptionState { interrupts_enabled: false }
+        PreemptionState {
+            interrupts_enabled: false,
+        }
     }
 
     /// Restores the saved preemption state.
@@ -32,7 +36,9 @@ impl PreemptionState {
     /// # Safety
     /// - Make sure that every preemption state is properly restored only once.
     pub unsafe fn copy(&self) -> PreemptionState {
-        PreemptionState { interrupts_enabled: self.interrupts_enabled }
+        PreemptionState {
+            interrupts_enabled: self.interrupts_enabled,
+        }
     }
 }
 

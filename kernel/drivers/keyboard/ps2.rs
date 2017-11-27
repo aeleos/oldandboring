@@ -46,8 +46,7 @@ impl Keyboard for PS2 {
             0x2C...0x35 => Some(b"zxcvbnm,./"[idx - 0x2C]),
             0x39 => Some(b' '),
             _ => None,
-        }
-        {
+        } {
             if should_apply {
                 Some(self.apply(ascii))
             } else {
@@ -56,7 +55,6 @@ impl Keyboard for PS2 {
         } else {
             None
         }
-
     }
 
     /// Update modifiers given the current scancode
@@ -81,6 +79,5 @@ impl Keyboard for PS2 {
             0xB8 => self.alt.left = false,
             _ => {}
         }
-
     }
 }

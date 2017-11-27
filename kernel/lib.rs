@@ -13,9 +13,10 @@ extern crate alloc;
 extern crate bit_field;
 extern crate compiler_builtins;
 extern crate hole_list_allocator as allocator;
+extern crate math;
 extern crate multiboot2;
-extern crate spin;
 extern crate raw_cpuid;
+extern crate spin;
 extern crate volatile;
 extern crate x86_64;
 

@@ -158,7 +158,7 @@ fn timer_handler() {
 fn irq8_handler() {
     unsafe {
         // Hack to avoid locks
-        if let Some(mut ticks) = IRQ8_INTERRUPT_TICKS.try_lock(){
+        if let Some(mut ticks) = IRQ8_INTERRUPT_TICKS.try_lock() {
             *ticks += 1;
         }
 

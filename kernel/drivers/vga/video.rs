@@ -3,7 +3,6 @@ use core::ptr::Unique;
 use core::marker::Copy;
 
 use core::mem::size_of;
-
 use BOOT_INFO;
 
 #[derive(Debug, Clone, Copy)]
@@ -89,9 +88,80 @@ where
         let location_ptr = start.offset(self.offset(x, y));
         (&*location_ptr).read()
     }
+
+    unsafe fn draw_line(&mut self, x1: u32, y1: u32, x2: u32, y2: u32, color: T) {
+        let dx = x2 as i32 - x1 as i32;
+        let dy = y2 as i32 - y1 as i32;
+
+        let dxabs = i32::abs(dx);
+        let dyabs = i32::abs(dy);
+
+        let sdx = i32::signum(dx);
+        let sdy = i32::signum(dy);
+
+        let mut x = dxabs >> 1;
+        let mut y = dyabs >> 1;
+
+        let mut px = x1 as i32;
+        let mut py = y1 as i32;
+
+        self.write(px as u32, py as u32, color);
+
+        if dxabs >= dyabs {
+            for _ in 0..dxabs {
+                y += dyabs;
+
+                if y >= dxabs {
+                    y -= dxabs;
+                    py += sdy;
+                }
+
+                px += sdx;
+                self.write(px as u32, py as u32, color);
+            }
+        } else {
+            for _ in 0..dyabs {
+                x += dxabs;
+                if x >= dyabs {
+                    x -= dyabs;
+                    px += sdx;
+                }
+                py += sdy;
+                self.write(px as u32, py as u32, color);
+            }
+        }
+    }
+
+    unsafe fn vertical_line(&mut self, x: u32, y: u32, h: u32, color: T) {
+        let start = self.address.as_ptr();
+        let mut location_ptr = start.offset(self.offset(x, y));
+        let pitch_pixels = self.pitch as isize / size_of::<T>() as isize;
+        for _ in 0..h as isize {
+            (&mut *location_ptr).write(color);
+            location_ptr = location_ptr.offset(pitch_pixels);
+        }
+    }
+
+    unsafe fn horizontal_line(&mut self, x: u32, y: u32, w: u32, color: T) {
+        let start = self.address.as_ptr();
+        let location_ptr = start.offset(self.offset(x, y));
+        for i in 0..w as isize {
+            (&mut *location_ptr.offset(i)).write(color);
+        }
+    }
+
+    unsafe fn fill_rect(&mut self, x: u32, y: u32, w: u32, h: u32, color: T) {
+        let start = self.address.as_ptr();
+        let mut location_ptr = start.offset(self.offset(x, y));
+        let pitch_pixels = self.pitch as isize / size_of::<T>() as isize;
+        for _ in 0..w {
+            for j in 0..h as isize {
+                (&mut *location_ptr.offset(j)).write(color);
+            }
+            location_ptr = location_ptr.offset(pitch_pixels);
+        }
+    }
 }
-
-
 
 pub fn init() {
     let fb_info = BOOT_INFO.try().unwrap().fb_info_tag().unwrap();
@@ -110,6 +180,14 @@ pub fn init() {
 
     let width = fb_info.width;
     let height = fb_info.height;
+
+    unsafe {
+        buffer.draw_line(0, 0, width - 100, height - 40, Pixel::new(255, 255, 255));
+        buffer.draw_line(100, 99, 200, 99, Pixel::new(255, 255, 255));
+        buffer.fill_rect(100, 100, 100, 100, Pixel::new(255, 10, 32));
+        buffer.vertical_line(20, 20, 500, Pixel::new(255, 255, 255));
+        buffer.horizontal_line(10, height - 100, width - 50, Pixel::new(10, 10, 255));
+    }
 
 
     let mut pr: f64;
@@ -149,18 +227,11 @@ pub fn init() {
                 }
 
                 let color = Pixel::new(
+                    if q < max_iter { 0 } else { 255 },
                     q as u8,
                     (q % max_iter) as u8,
-                    if q < max_iter { 0 } else { 255 },
                 );
-                // debugln!(
-                //     "putpixel: x: {}, y: {}, color: {}, {}, {}",
-                //     x,
-                //     y,
-                //     q as u8,
-                //     (q % max_iter) as u8,
-                //     if q < max_iter { 0 } else { 255 }
-                // );
+
                 buffer.write(x, y, color)
             }
         }

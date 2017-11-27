@@ -116,7 +116,12 @@ impl MemoryController {
         physical_address: PhysicalAddress,
         flags: EntryFlags,
     ) {
-        self.active_table.map_page_at(virtual_address, physical_address, flags, &mut self.frame_allocator);
+        self.active_table.map_page_at(
+            virtual_address,
+            physical_address,
+            flags,
+            &mut self.frame_allocator,
+        );
     }
 
 
