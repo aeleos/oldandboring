@@ -25,7 +25,7 @@ A boring description for a boring os
 
 ![Alt text](images/mandelbrot.png?raw=true "Mandelbrot")
 
-![Alt text](images/terrain.png?raw=true "Terrain Rendering")
+![Alt text](images/terrain1.png?raw=true "Terrain Rendering")
 
 
 ## Installation
