@@ -41,6 +41,7 @@ mod cpuio;
 mod common;
 mod sync;
 mod interrupts;
+mod video;
 
 static KEYBOARD: Mutex<cpuio::Port<u8>> = Mutex::new(unsafe { cpuio::Port::new(0x60) });
 
@@ -78,6 +79,9 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     // println!("Boot Info: {:?}", BOOT_INFO.try().unwrap());
 
     drivers::vga::video::init();
+
+    video::voxelspace::test();
+    // video::mandelbrot::draw();
 
     loop {}
 }

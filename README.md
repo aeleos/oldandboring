@@ -21,6 +21,12 @@ A boring description for a boring os
  - Networking?
  - Filesystem?
 
+## Pictures
+
+![Alt text](images/mandelbrot.png?raw=true "Mandelbrot")
+
+![Alt text](images/terrain.png?raw=true "Terrain Rendering")
+
 
 ## Installation
 This should install everything needed to get started from a clean ubuntu 16.04 installation

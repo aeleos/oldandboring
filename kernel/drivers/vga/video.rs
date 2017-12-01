@@ -1,21 +1,26 @@
 use volatile::Volatile;
 use core::ptr::Unique;
 use core::marker::Copy;
+use spin::{Mutex, Once};
 
 use core::mem::size_of;
 use BOOT_INFO;
 
+pub trait Pixel {
+    fn new(red: u8, green: u8, blue: u8) -> Self;
+}
+
 #[derive(Debug, Clone, Copy)]
 #[repr(C, packed)]
-struct Pixel {
+pub struct RGBPixel {
     blue: u8,
     green: u8,
     red: u8,
 }
 
-impl Pixel {
-    pub fn new(blue: u8, green: u8, red: u8) -> Pixel {
-        Pixel {
+impl Pixel for RGBPixel {
+    fn new(red: u8, green: u8, blue: u8) -> Self {
+        RGBPixel {
             blue: blue,
             green: green,
             red: red,
@@ -23,9 +28,9 @@ impl Pixel {
     }
 }
 
-struct Buffer<T>
+pub struct Buffer<T>
 where
-    T: Copy,
+    T: Pixel + Copy,
 {
     address: Unique<Volatile<T>>,
     location: u64,
@@ -35,7 +40,7 @@ where
     pixelwidth: u8,
 }
 
-impl<T> Buffer<T>
+impl<T: Pixel> Buffer<T>
 where
     T: Copy,
 {
@@ -65,6 +70,18 @@ where
         }
     }
 
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
+    pub fn pixel(&self, red: u8, green: u8, blue: u8) -> T {
+        T::new(red, green, blue)
+    }
+
     fn offset(&self, x: u32, y: u32) -> isize {
         assert!(self.width > x);
         assert!(self.height > y);
@@ -77,19 +94,19 @@ where
         ((x * self.pixelwidth as u32 + y * self.pitch)) as isize
     }
 
-    unsafe fn write(&mut self, x: u32, y: u32, pixel: T) {
+    pub unsafe fn write(&mut self, x: u32, y: u32, pixel: T) {
         let start = self.address.as_ptr();
         let location_ptr = start.offset(self.offset(x, y));
         (&mut *location_ptr).write(pixel);
     }
 
-    unsafe fn read(&mut self, x: u32, y: u32) -> T {
+    pub unsafe fn read(&mut self, x: u32, y: u32) -> T {
         let start = self.address.as_ref() as *const Volatile<T>;
         let location_ptr = start.offset(self.offset(x, y));
         (&*location_ptr).read()
     }
 
-    unsafe fn draw_line(&mut self, x1: u32, y1: u32, x2: u32, y2: u32, color: T) {
+    pub unsafe fn draw_line(&mut self, x1: u32, y1: u32, x2: u32, y2: u32, color: T) {
         let dx = x2 as i32 - x1 as i32;
         let dy = y2 as i32 - y1 as i32;
 
@@ -132,17 +149,21 @@ where
         }
     }
 
-    unsafe fn vertical_line(&mut self, x: u32, y: u32, h: u32, color: T) {
+    pub unsafe fn vertical_line(&mut self, x: u32, ytop: u32, ybottom: u32, color: T) {
+        if ytop > ybottom {
+            return;
+        }
+
         let start = self.address.as_ptr();
-        let mut location_ptr = start.offset(self.offset(x, y));
+        let mut location_ptr = start.offset(self.offset(x, ytop));
         let pitch_pixels = self.pitch as isize / size_of::<T>() as isize;
-        for _ in 0..h as isize {
+        for _ in 0..(ybottom - ytop) as isize {
             (&mut *location_ptr).write(color);
             location_ptr = location_ptr.offset(pitch_pixels);
         }
     }
 
-    unsafe fn horizontal_line(&mut self, x: u32, y: u32, w: u32, color: T) {
+    pub unsafe fn horizontal_line(&mut self, x: u32, y: u32, w: u32, color: T) {
         let start = self.address.as_ptr();
         let location_ptr = start.offset(self.offset(x, y));
         for i in 0..w as isize {
@@ -150,7 +171,7 @@ where
         }
     }
 
-    unsafe fn fill_rect(&mut self, x: u32, y: u32, w: u32, h: u32, color: T) {
+    pub unsafe fn fill_rect(&mut self, x: u32, y: u32, w: u32, h: u32, color: T) {
         let start = self.address.as_ptr();
         let mut location_ptr = start.offset(self.offset(x, y));
         let pitch_pixels = self.pitch as isize / size_of::<T>() as isize;
@@ -163,86 +184,45 @@ where
     }
 }
 
+pub static SCREEN: Once<Mutex<Buffer<RGBPixel>>> = Once::new();
+
 pub fn init() {
     let fb_info = BOOT_INFO.try().unwrap().fb_info_tag().unwrap();
 
     debugln!("framebuffer_info: {:?}", fb_info);
 
-    let mut buffer = Buffer::new(
-        fb_info.addr,
-        fb_info.width,
-        fb_info.height,
-        fb_info.pitch,
-        fb_info.bpp / 8,
-    );
+    SCREEN.call_once(|| {
+        Mutex::new(Buffer::new(
+            fb_info.addr,
+            fb_info.width,
+            fb_info.height,
+            fb_info.pitch,
+            fb_info.bpp / 8,
+        ))
+    });
+
+    let buffer = SCREEN.try().unwrap().lock();
 
     buffer.init();
 
-    let width = fb_info.width;
-    let height = fb_info.height;
-
-    unsafe {
-        buffer.draw_line(0, 0, width - 100, height - 40, Pixel::new(255, 255, 255));
-        buffer.draw_line(100, 99, 200, 99, Pixel::new(255, 255, 255));
-        buffer.fill_rect(100, 100, 100, 100, Pixel::new(255, 10, 32));
-        buffer.vertical_line(20, 20, 500, Pixel::new(255, 255, 255));
-        buffer.horizontal_line(10, height - 100, width - 50, Pixel::new(10, 10, 255));
-    }
-
-
-    let mut pr: f64;
-    let mut pi: f64;
-    let mut new_re: f64;
-    let mut new_im: f64;
-    let mut old_re: f64;
-    let mut old_im: f64;
-    let zoom: f64 = 1.0;
-    let move_x: f64 = -0.5;
-    let move_y: f64 = 0.0;
-    let max_iter = 300;
-
-    unsafe {
-        for y in 0..height {
-            for x in 0..width {
-                pr = 1.5
-                    * ((x as i32 - (width as i32 / 2)) as f64 / (0.5 * zoom * width as f64)) as f64
-                    + move_x;
-                pi = ((y as i32 - (height as i32 / 2)) as f64 / (0.5 * zoom * height as f64)) as f64
-                    + move_y;
-
-                new_re = 0.0;
-                new_im = 0.0;
-                let mut q: i32 = 0;
-                for i in 0..max_iter {
-                    q = i;
-                    old_re = new_re;
-                    old_im = new_im;
-
-                    new_re = old_re * old_re - old_im * old_im + pr;
-                    new_im = 2.0 * old_re * old_im + pi;
-
-                    if (new_re * new_re + new_im * new_im) as u64 > 4 {
-                        break;
-                    }
-                }
-
-                let color = Pixel::new(
-                    if q < max_iter { 0 } else { 255 },
-                    q as u8,
-                    (q % max_iter) as u8,
-                );
-
-                buffer.write(x, y, color)
-            }
-        }
-    }
-
-    // for i in 0..768 {
-    //     unsafe {
-    //         buffer.write(i, i, Pixel::new(0xff, 0xff, 0xff));
-    //     };
+    // let width = fb_info.width;
+    // let height = fb_info.height;
+    //
+    //
+    // unsafe {
+    //     buffer.draw_line(0, 0, width - 100, height - 40, Pixel::new(255, 255, 255));
+    //     buffer.draw_line(100, 99, 200, 99, Pixel::new(255, 255, 255));
+    //     buffer.fill_rect(100, 100, 100, 100, Pixel::new(255, 10, 32));
+    //     buffer.vertical_line(20, 20, 500, Pixel::new(255, 255, 255));
+    //     buffer.horizontal_line(10, height - 100, width - 50, Pixel::new(10, 10, 255));
     // }
-    // for i in 0..256 {
-    //     writer.putpixel(i + 768, i, 0xffffff);
+
+    // for x in 0..768 {
+    //     for y in 0..768 {
+    //         let color = super::map::get_color(x, y);
+    //         unsafe {
+    //             buffer.write(x, y, Pixel::new(color[2], color[1], color[0]));
+    //         };
+    //     }
     // }
 }

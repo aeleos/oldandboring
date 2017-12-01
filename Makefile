@@ -43,9 +43,9 @@ $(kernel): kernel $(rust_os) $(assembly_object_files) $(linker_script)
 
 kernel:
 	export CARGO_TARGET_DIR=build
-	@xargo build --target $(target)
+	@xargo build --target $(target) --release
 
 # compile assembly files
-build/arch/$(arch)/%.o: kernel/arch/$(arch)/%.asm
+build/arch/$(arch)/boot/%.o: kernel/arch/$(arch)/boot/%.asm
 	@mkdir -p $(shell dirname $@)
 	@nasm -felf64 $< -o $@

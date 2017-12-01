@@ -200,14 +200,16 @@ impl Header {
 
 impl fmt::Display for Header {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Vendor: {:04x} Device: {:04x} {:?} {}",
-            self.vendor_id,
-            self.device_id,
-            self.device_class,
-            self.description(),
-        )
+        unsafe {
+            write!(
+                f,
+                "Vendor: {:04x} Device: {:04x} {:?} {}",
+                self.vendor_id,
+                self.device_id,
+                self.device_class,
+                self.description(),
+            )
+        }
     }
 }
 
