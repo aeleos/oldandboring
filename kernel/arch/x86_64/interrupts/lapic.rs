@@ -160,13 +160,16 @@ pub fn calibrate_timer() {
         set_register(TIMER_INITIAL_COUNT, <u32>::max_value());
         // Wait until the specified amount of time has passed.
 
-        loop {
-            if let Some(ticks) = IRQ8_INTERRUPT_TICKS.try_lock() {
-                if *ticks >= end_tick {
-                    break;
-                }
-            }
-
+        // loop {
+        //     if let Some(ticks) = IRQ8_INTERRUPT_TICKS.try_lock() {
+        //         if *ticks >= end_tick {
+        //             break;
+        //         }
+        //     }
+        //
+        //     asm!("pause" : : : : "intel", "volatile");
+        // }
+        while *IRQ8_INTERRUPT_TICKS.lock() < end_tick {
             asm!("pause" : : : : "intel", "volatile");
         }
 

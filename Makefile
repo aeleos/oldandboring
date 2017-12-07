@@ -10,7 +10,7 @@ assembly_source_files := $(wildcard kernel/arch/$(arch)/boot/*.asm)
 assembly_object_files := $(patsubst kernel/arch/$(arch)/boot/%.asm, \
 	build/arch/$(arch)/boot/%.o, $(assembly_source_files))
 
-.PHONY: all clean run iso kernel
+.PHONY: all clean run iso kernel gdb
 
 all: $(kernel)
 
@@ -23,8 +23,8 @@ run: $(iso)
 debug: $(iso)
 	@qemu-system-x86_64 -cdrom $(iso) -s -S -d int -no-reboot
 
-gdb:
-  @rust-os-gdb/bin/rust-gdb "build/kernel-x86_64.bin" -ex "target remote :1234"
+gdb: $(kernel)
+	exec rust-gdb "$(kernel)" -ex "target remote :1234"
 
 iso: $(iso)
 
@@ -43,7 +43,7 @@ $(kernel): kernel $(rust_os) $(assembly_object_files) $(linker_script)
 
 kernel:
 	export CARGO_TARGET_DIR=build
-	@xargo build --target $(target) --release
+	CARGO_INCREMENTAL=1 time xargo build --target $(target)
 
 # compile assembly files
 build/arch/$(arch)/boot/%.o: kernel/arch/$(arch)/boot/%.asm

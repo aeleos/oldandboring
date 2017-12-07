@@ -4,10 +4,14 @@ use core::marker::Copy;
 use spin::{Mutex, Once};
 
 use core::mem::size_of;
+use core::mem;
 use BOOT_INFO;
+
 
 pub trait Pixel {
     fn new(red: u8, green: u8, blue: u8) -> Self;
+
+    fn new_from_arr(colors: [u8; 3]) -> Self;
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -25,6 +29,10 @@ impl Pixel for RGBPixel {
             green: green,
             red: red,
         }
+    }
+
+    fn new_from_arr(colors: [u8; 3]) -> Self {
+        unsafe { mem::transmute::<[u8; 3], Self>(colors) }
     }
 }
 
@@ -80,6 +88,10 @@ where
 
     pub fn pixel(&self, red: u8, green: u8, blue: u8) -> T {
         T::new(red, green, blue)
+    }
+
+    pub fn pixel_from_arr(&self, colors: [u8; 3]) -> T {
+        T::new_from_arr(colors)
     }
 
     fn offset(&self, x: u32, y: u32) -> isize {

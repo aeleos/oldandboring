@@ -1,8 +1,10 @@
 //! Handles synchronization within the kernel.
 
+pub mod kernel_mutex;
 pub mod time;
 
 use arch;
+pub use self::kernel_mutex::KernelMutex;
 
 /// Saves the state when disabling preemtion, so it can be restored later.
 #[derive(Default)]

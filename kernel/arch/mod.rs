@@ -5,10 +5,11 @@
 
 macro_rules! export_arch {
     ($name: ident) => {
-        // pub use self::$name::early_init;
+        pub use self::$name::early_init;
         pub use self::$name::init;
         pub use self::$name::get_cpu_id;
         pub use self::$name::get_cpu_num;
+        pub use self::$name::interrupts::CLOCK;
         // pub use self::$name::schedule;
         // pub use self::$name::enter_first_thread;
         // pub use self::$name::Context;

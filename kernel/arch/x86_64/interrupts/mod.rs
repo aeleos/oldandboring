@@ -7,9 +7,9 @@ use x86_64::structures::tss::TaskStateSegment;
 use x86_64::instructions::interrupts;
 use x86_64::VirtualAddress;
 use x86_64::instructions::port::{inb, outb};
-use super::sync::CLOCK;
-use spin::{Mutex, Once};
-
+pub use super::sync::CLOCK;
+use spin::Once;
+use sync::KernelMutex;
 use memory::MEMORY_CONTROLLER;
 
 /// The vector for the scheduling interrupt.
@@ -42,7 +42,7 @@ const TIMER_INTERRUPT_HANDLER_NUM: u8 = 0x30;
 const SPURIOUS_INTERRUPT_HANDLER_NUM: u8 = 0x2f;
 
 /// The number of IRQ8 interrupt ticks that have passed since it was enabled.
-static IRQ8_INTERRUPT_TICKS: Mutex<u64> = Mutex::new(0);
+pub static IRQ8_INTERRUPT_TICKS: KernelMutex<u64> = KernelMutex::new(0);
 
 
 lazy_static! {
@@ -157,10 +157,7 @@ fn timer_handler() {
 
 fn irq8_handler() {
     unsafe {
-        // Hack to avoid locks
-        if let Some(mut ticks) = IRQ8_INTERRUPT_TICKS.try_lock() {
-            *ticks += 1;
-        }
+        *IRQ8_INTERRUPT_TICKS.lock() += 1;
 
         // Read status register c of the RTC to signal the end of an interrupt.
         let nmi_bit = inb(0x70) & 0x80;
