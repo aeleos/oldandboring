@@ -1,0 +1,38 @@
+[package]
+authors = ["aticu <15schnic@gmail.com>"]
+description = "An operating system kernel."
+keywords = [
+    "OS",
+    "operating",
+    "system",
+    "BoringOS",
+    "kernel",
+]
+license = "MIT"
+name = "boringos"
+readme = "README.md"
+version = "0.1.0"
+
+[dependencies]
+bitflags = "1.0.1"
+once = "0.3.3"
+raw-cpuid = "3.0.0"
+rlibc = "1.0.0"
+volatile = "0.2.3"
+
+[dependencies.lazy_static]
+features = ["spin_no_std"]
+version = "1.0.0"
+
+[dependencies.multiboot2]
+git = "https://github.com/aeleos/multiboot2-elf64"
+
+[lib]
+crate-type = ["staticlib"]
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+[target."cfg(target_arch = \"x86_64\")".dependencies]
+x86_64 = "0.1.2"

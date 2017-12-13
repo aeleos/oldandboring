@@ -1,4 +1,0 @@
-[submodule "kernel/libs/multiboot2-elf64"]
-	path = kernel/libs/multiboot2-elf64
-	url = git@github.com:aeleos/multiboot2-elf64.git
-	branch = master

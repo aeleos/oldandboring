@@ -1,0 +1,28 @@
+[package]
+authors = ["aticu <15schnic@gmail.com>"]
+description = "The init process of BoringOS."
+keywords = [
+    "OS",
+    "operating",
+    "system",
+    "BoringOS",
+    "std",
+]
+license = "MIT"
+name = "init"
+version = "0.1.0"
+
+[dependencies]
+rlibc = "1.0.0"
+
+[dependencies.boringos_std]
+path = "../std"
+version = "0.1"
+
+[lib]
+crate-type = ["staticlib"]
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
