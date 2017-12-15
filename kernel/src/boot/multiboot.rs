@@ -2,6 +2,7 @@
 
 use core::mem::size_of;
 use memory::{FreeMemoryArea, PhysicalAddress};
+use arch::vga_buffer;
 
 /// Represents the multiboot information structure.
 #[repr(C)]
@@ -30,6 +31,13 @@ struct MultibootInformation {
     vbe_interface_seg: u16,
     vbe_interface_off: u16,
     vbe_interface_len: u16,
+    framebuffer_addr: u64,
+    framebuffer_pitch: u32,
+    framebuffer_width: u32,
+    framebuffer_height: u32,
+    framebuffer_bpp: u8,
+    framebuffer_type: u8,
+    color_info: [u8; 6],
 }
 
 bitflags! {
@@ -59,11 +67,13 @@ bitflags! {
         const APM_TABLE = 1 << 10;
         ///VBE information is available.
         const VBE = 1 << 11;
+        //Framebuffer information is available.
+        const FRAMEBUFFER = 1 << 12;
     }
 }
 
 /// Represents an entry in the given memory map.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C, packed)]
 struct MmapEntry {
     /// The size of the entry.
@@ -107,6 +117,25 @@ pub fn init(information_structure_address: usize) {
     assert!(!get_flags().contains(MultibootFlags::A_OUT | MultibootFlags::ELF));
 }
 
+/// Returns the VGA buffer information requested.
+#[cfg(target_arch = "x86_64")]
+pub fn get_vga_info() -> vga_buffer::Info {
+    if get_flags().contains(MultibootFlags::FRAMEBUFFER) {
+        let info = get_info();
+        return vga_buffer::Info {
+            height: info.framebuffer_height as usize,
+            width: info.framebuffer_width as usize,
+            address: to_virtual!(info.framebuffer_addr) as usize,
+        };
+    } else {
+        return vga_buffer::Info {
+            height: 25,
+            width: 80,
+            address: to_virtual!(0xb8000),
+        };
+    }
+}
+
 /// Returns the start address of the initramfs.
 pub fn get_initramfs_start() -> PhysicalAddress {
     get_initramfs_module_entry().mod_start as usize
@@ -115,7 +144,6 @@ pub fn get_initramfs_start() -> PhysicalAddress {
 /// Returns the length of the initramfs.
 pub fn get_initramfs_length() -> usize {
     let entry = get_initramfs_module_entry();
-
     entry.mod_end as usize - entry.mod_start as usize
 }
 

@@ -29,11 +29,13 @@ extern crate alloc;
 extern crate bitflags;
 #[macro_use]
 extern crate lazy_static;
+extern crate multiboot2;
 #[macro_use]
 extern crate once;
 extern crate raw_cpuid;
 #[allow(unused_extern_crates)]
 extern crate rlibc;
+extern crate spin;
 extern crate volatile;
 extern crate x86_64;
 

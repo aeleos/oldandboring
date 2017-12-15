@@ -51,7 +51,6 @@ impl ElfFile {
                         }
                     }
                 }
-                debugln!("{:?}", header);
 
                 Ok(ElfFile {
                     file_handle,

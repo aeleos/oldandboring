@@ -54,7 +54,7 @@ multiboot2_end:     ;end of multiboot header
 
 ;support for multiboot
 %define MULTIBOOT_MAGIC 0x1badb002
-%define MULTIBOOT_FLAGS 0x10003
+%define MULTIBOOT_FLAGS 0b0000_0000_0000_0001_0000_0000_0000_0111
 
 multiboot_start:    ;start of multiboot header
     dd MULTIBOOT_MAGIC
@@ -65,4 +65,8 @@ multiboot_start:    ;start of multiboot header
     dd _bss_start                            ;the end address of the data segment
     dd _kernel_end                           ;the end address of the bss segment
     dd start                                 ;the entry point for the kernel
+    dd 1                                      ; mode_type
+    dd 0                                      ; width
+    dd 0                                      ; height
+    dd 0                                      ; depth
 multiboot_end:
