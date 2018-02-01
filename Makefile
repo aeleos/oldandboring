@@ -1,51 +1,55 @@
 arch ?= x86_64
-kernel := build/kernel-$(arch).bin
-iso := build/os-$(arch).iso
-target ?= $(arch)-boring_os
-rust_os := target/$(target)/debug/libboring_os.a
+build_type ?= debug
 
-linker_script := kernel/arch/$(arch)/linker.ld
-grub_cfg := kernel/arch/$(arch)/grub.cfg
-assembly_source_files := $(wildcard kernel/arch/$(arch)/boot/*.asm)
-assembly_object_files := $(patsubst kernel/arch/$(arch)/boot/%.asm, \
-	build/arch/$(arch)/boot/%.o, $(assembly_source_files))
+modules := kernel init test
 
-.PHONY: all clean run iso kernel gdb
+target_dir := target
 
-all: $(kernel)
+iso := image.iso
 
+make_args := arch=$(arch) build_type=$(build_type)
+
+initramfs := $(target_dir)/boot/initramfs
+
+.PHONY: all
+all: copy_to_target $(initramfs)
+
+.PHONY: copy_to_target
+copy_to_target:
+	$(foreach module,$(modules),$(MAKE) -C $(module) copy_to_target $(make_args) &&) true
+	cp -r conf $(target_dir)
+
+.PHONY: clean
 clean:
-	@rm -r build
+	$(foreach module,$(modules),$(MAKE) -C $(module) clean $(make_args) && ) true
+	rm -rf target $(iso)
+	$(MAKE) -C mkinitramfs clean $(make_args)
 
+.PHONY: run
 run: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso) -s -serial stdio -vga std
+	qemu-system-x86_64 -cdrom $(iso) --no-reboot -smp cores=4 -s -serial stdio
 
-debug: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso) -s -S -d int -no-reboot
+.PHONY: kvm
+kvm: $(iso)
+	qemu-system-x86_64 -cdrom $(iso) --no-reboot -smp cores=4 -s -chardev stdio,mux=on,id=char0 -mon chardev=char0,mode=readline -serial chardev:char0 -serial chardev:char0  -M accel=kvm:tcg
+
+run_verbose: $(iso)
+	qemu-system-x86_64 -cdrom $(iso) -d int,cpu_reset -D error.log --no-reboot -smp cores=4 -s -monitor stdio -M accel=kvm:tcg --no-shutdown
+
 
 gdb: $(kernel)
-	exec rust-gdb "$(kernel)" -ex "target remote :1234"
-
-iso: $(iso)
+	exec rust-gdb "target/boot/kernel.bin" -ex "target remote :1234"
 
 
+$(iso): all
+	grub-mkrescue -o $(iso) $(target_dir) 2>/dev/null
 
-$(iso): $(kernel) $(grub_cfg)
-	@mkdir -p build/isofiles/boot/grub
-	@cp $(kernel) build/isofiles/boot/kernel.bin
-	@cp $(grub_cfg) build/isofiles/boot/grub
-	@grub-mkrescue -o $(iso) build/isofiles 2> /dev/null
-	@rm -rf build/isofiles
+.PHONY: $(modules)
+$(modules):
+	$(MAKE) -C $@ $(make_args)
 
-$(kernel): kernel $(rust_os) $(assembly_object_files) $(linker_script)
-	@ld -n --gc-sections -T $(linker_script) -o $(kernel) \
-		$(assembly_object_files) $(rust_os)
+.PHONY: initramfs
+initramfs:
+	$(MAKE) -C mkinitramfs run $(make_args)
 
-kernel:
-	export CARGO_TARGET_DIR=build
-	CARGO_INCREMENTAL=1 time xargo build --target $(target)
-
-# compile assembly files
-build/arch/$(arch)/boot/%.o: kernel/arch/$(arch)/boot/%.asm
-	@mkdir -p $(shell dirname $@)
-	@nasm -felf64 $< -o $@
+$(initramfs): initramfs

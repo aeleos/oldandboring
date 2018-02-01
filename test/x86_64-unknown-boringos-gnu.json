@@ -1,0 +1,20 @@
+{
+    "llvm-target": "x86_64-unknown-boringos",
+    "target-endian": "little",
+    "target-pointer-width": "64",
+    "target-c-int-width": "32",
+    "linker-flavor": "gcc",
+    "os": "BoringOS",
+    "arch": "x86_64",
+    "linker-flavor": "gcc",
+    "target-family": "none",
+    "data-layout": "e-m:e-i64:64-f80:128-n8:16:32:64-S128",
+    "pre-link-args": [ "-m64" ],
+    "cpu": "x86-64",
+    "feature": "+mmx, +sse",
+    "eliminate-frame-pointer": true,
+    "linker-is-gnu": true,
+    "no-compiler-rt": true,
+    "archive-format": "gnu",
+    "panic-strategy": "abort"
+}
