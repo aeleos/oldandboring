@@ -1,5 +1,5 @@
 [package]
-authors = ["aticu <15schnic@gmail.com>"]
+authors = ["Oliver Geller <ogeller@u.rochester.edu>"]
 description = "The init process of BoringOS."
 keywords = [
     "OS",
@@ -26,3 +26,6 @@ panic = "abort"
 
 [profile.release]
 panic = "abort"
+
+[build-dependencies]
+image = "*"

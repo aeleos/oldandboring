@@ -66,10 +66,7 @@ mod x86_64;
 pub fn write_fmt(args: fmt::Arguments) {
     if cfg!(target_arch = "x86_64") {
         use core::fmt::Write;
-        x86_64::vga_buffer::WRITER
-            .lock()
-            .write_fmt(args)
-            .unwrap();
+        x86_64::vga_buffer::WRITER.lock().write_fmt(args).unwrap();
     }
 }
 

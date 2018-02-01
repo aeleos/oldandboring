@@ -9,6 +9,7 @@ mod interrupts;
 pub mod context;
 mod syscalls;
 mod gdt;
+// pub mod video;
 
 pub use self::context::Context;
 use self::gdt::{GDT, TSS};
@@ -95,6 +96,7 @@ pub fn get_cpu_num() -> usize {
 /// # Safety
 /// - This should only be called once.
 pub unsafe fn enter_first_thread() -> ! {
+    // video::test();
     let stack_pointer = CURRENT_THREAD
         .without_locking()
         .context

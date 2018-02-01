@@ -103,4 +103,4 @@ $(assembly_object_files): $(build_dir)/%.o : $(src_dir)/%.asm
 
 .PHONY: cargo
 cargo:
-	$(rust_compiler) build $(rust_compiler_flags)
+	RUST_TARGET_PATH=`pwd` $(rust_compiler) build $(rust_compiler_flags) 

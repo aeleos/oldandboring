@@ -53,6 +53,19 @@ macro_rules! from_raw_str {
     }};
 }
 
+/// Returns true for a valid virtual address.
+#[macro_export]
+macro_rules! valid_address {
+    ($address: expr) => {{
+        if cfg!(arch = "x86_64") {
+            use arch::x86_64::memory::{VIRTUAL_LOW_MAX_ADDRESS, VIRTUAL_HIGH_MIN_ADDRESS};
+            (VIRTUAL_LOW_MAX_ADDRESS >= $address || $address >= VIRTUAL_HIGH_MIN_ADDRESS)
+        } else {
+            true
+        }
+    }};
+}
+
 /// Converts to a virtual address.
 ///
 /// Converts a given physical address within the kernel part of memory to its
@@ -67,15 +80,20 @@ macro_rules! to_virtual {
     }};
 }
 
-/// Returns true for a valid virtual address.
+/// Converts to a physical address.
+///
+/// Converts a given virtual address within the kernel part of memory to its
+/// corresponding
+/// physical address.
 #[macro_export]
-macro_rules! valid_address {
+#[cfg(target_arch = "x86_64")]
+macro_rules! to_physical {
     ($address: expr) => {{
-        if cfg!(arch = "x86_64") {
-            use arch::x86_64::memory::{VIRTUAL_LOW_MAX_ADDRESS, VIRTUAL_HIGH_MIN_ADDRESS};
-            (VIRTUAL_LOW_MAX_ADDRESS >= $address || $address >= VIRTUAL_HIGH_MIN_ADDRESS)
+        if valid_address!($address) {
+            const KERNEL_OFFSET: usize = 0xffff800000000000;
+            $address as usize - KERNEL_OFFSET
         } else {
-            true
+            panic!("{} is not a valid address", $address);
         }
     }};
 }

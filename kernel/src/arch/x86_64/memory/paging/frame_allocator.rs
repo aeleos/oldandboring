@@ -42,7 +42,7 @@ impl FrameAllocator {
         let mut list = iterator.finish();
 
         if !free_area.is_none() {
-            let free_area = free_area.expect("we broke");
+            let free_area = free_area.unwrap();
             let page_frame = PageFrame::from_address(free_area.start_address);
 
             let new_free_area = free_area.without_first_frame();

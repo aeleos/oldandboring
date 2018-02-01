@@ -126,12 +126,16 @@ pub fn get_vga_info() -> vga_buffer::Info {
             height: info.framebuffer_height as usize,
             width: info.framebuffer_width as usize,
             address: to_virtual!(info.framebuffer_addr) as usize,
+            bpp: info.framebuffer_bpp,
+            pitch: info.framebuffer_pitch as usize,
         };
     } else {
         return vga_buffer::Info {
             height: 25,
             width: 80,
             address: to_virtual!(0xb8000),
+            bpp: 16,
+            pitch: 160,
         };
     }
 }

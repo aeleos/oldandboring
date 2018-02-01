@@ -31,7 +31,7 @@ run: $(iso)
 
 .PHONY: kvm
 kvm: $(iso)
-	qemu-system-x86_64 -cdrom $(iso) --no-reboot -smp cores=4 -s -serial stdio -M accel=kvm:tcg
+	qemu-system-x86_64 -cdrom $(iso) --no-reboot -smp cores=4 -s -chardev stdio,mux=on,id=char0 -mon chardev=char0,mode=readline -serial chardev:char0 -serial chardev:char0  -M accel=kvm:tcg
 
 run_verbose: $(iso)
 	qemu-system-x86_64 -cdrom $(iso) -d int,cpu_reset -D error.log --no-reboot -smp cores=4 -s -monitor stdio -M accel=kvm:tcg --no-shutdown

@@ -15,6 +15,7 @@ use super::*;
 use core::fmt;
 use memory;
 use memory::{PageFlags, PhysicalAddress, VirtualAddress};
+use boot;
 
 /// Initializes the paging.
 pub fn init(initramfs_start: PhysicalAddress, initramfs_length: usize) {
@@ -187,15 +188,17 @@ unsafe fn remap_kernel() {
             PageTableEntryFlags::WRITABLE | PageTableEntryFlags::GLOBAL
                 | PageTableEntryFlags::NO_EXECUTE,
         );
-    }
 
-    // Map the VGA buffer.
-    new_page_table.map_page_at(
-        Page::from_address(to_virtual!(0xb8000)),
-        PageFrame::from_address(0xb8000),
-        PageTableEntryFlags::WRITABLE | PageTableEntryFlags::GLOBAL
-            | PageTableEntryFlags::NO_EXECUTE,
-    );
+        let info = boot::get_vga_info();
+        debugln!("vga info: {:?}", info);
+        map_section(
+            info.height * info.pitch as usize,
+            to_physical!(info.address),
+            PageTableEntryFlags::WRITABLE | PageTableEntryFlags::GLOBAL
+                | PageTableEntryFlags::NO_EXECUTE
+                | PageTableEntryFlags::USER_ACCESSIBLE,
+        )
+    }
 
     // Map the stack pages.
     let stack_size = STACK_TOP - STACK_BOTTOM;

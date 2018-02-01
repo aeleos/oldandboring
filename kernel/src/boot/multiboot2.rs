@@ -17,18 +17,19 @@ pub fn init(information_structure_address: usize) {
 #[cfg(target_arch = "x86_64")]
 pub fn get_vga_info() -> vga_buffer::Info {
     match BOOT_INFO.try().unwrap().fb_info_tag() {
-        Some(framebuffer_tag) => {
-            debugln!("{:?}", framebuffer_tag);
-            vga_buffer::Info {
-                height: framebuffer_tag.height as usize,
-                width: framebuffer_tag.width as usize,
-                address: to_virtual!(framebuffer_tag.addr) as usize,
-            }
-        }
+        Some(framebuffer_tag) => vga_buffer::Info {
+            height: framebuffer_tag.height as usize,
+            width: framebuffer_tag.width as usize,
+            address: to_virtual!(framebuffer_tag.addr) as usize,
+            bpp: framebuffer_tag.bpp,
+            pitch: framebuffer_tag.pitch as usize,
+        },
         None => vga_buffer::Info {
             height: 25,
             width: 80,
             address: to_virtual!(0xb8000),
+            bpp: 16,
+            pitch: 160,
         },
     }
 }

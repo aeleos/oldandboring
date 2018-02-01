@@ -1,17 +1,24 @@
 [package]
+authors = ["Oliver Geller <ogeller@u.rochester.edu>"]
+description = "The standard library used by BoringOS."
+keywords = [
+    "OS",
+    "operating",
+    "system",
+    "BoringOS",
+    "std",
+]
+license = "MIT"
 name = "boringos_std"
 version = "0.1.0"
-authors = ["aticu <15schnic@gmail.com>"]
-description = "The standard library used by BoringOS."
-keywords = ["OS", "operating", "system", "BoringOS", "std"]
-license = "MIT"
-
-[lib]
-crate-type = ["rlib"]
 
 [dependencies]
 rlibc = "1.0"
+spin = "0.4.6"
+volatile = "0.2.3"
 
+[lib]
+crate-type = ["rlib"]
 [profile.dev]
 panic = "abort"
 

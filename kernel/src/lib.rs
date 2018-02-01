@@ -16,7 +16,7 @@
 #![no_std]
 #![warn(missing_docs)]
 #![default_lib_allocator]
-
+#![feature(ptr_internals)]
 //! The BoringOS operating system kernel.
 //!
 //! This crate contains all of the rust code for the BoringOS kernel.
@@ -55,6 +55,7 @@ mod elf;
 mod file_handle;
 mod drivers;
 mod cpuio;
+// mod video;
 
 /// The name of the operating system.
 static OS_NAME: &str = "BoringOS";
@@ -101,6 +102,8 @@ pub extern "C" fn main(magic_number: u32, information_structure_address: usize) 
         arch::get_free_memory_size() / 1024 / 1024
     );
 
+    // video::voxelspace::test();
+
     elf::process_from_initramfs_file("/bin/init").expect("Initprocess could not be loaded");
 
     unsafe {
@@ -110,7 +113,8 @@ pub extern "C" fn main(magic_number: u32, information_structure_address: usize) 
 
 #[cfg(not(test))]
 #[lang = "eh_personality"]
-extern "C" fn eh_personality() {
+#[no_mangle]
+pub extern "C" fn eh_personality() {
     unimplemented!();
 }
 
@@ -125,8 +129,8 @@ extern "C" fn eh_personality() {
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn panic_fmt(fmt: core::fmt::Arguments, file: &'static str, line: u32) -> ! {
-    debugln!("PANIC! in file '{}' at line {}:", file, line);
-    debugln!("{}", fmt);
+    panic_debugln!("PANIC! in file '{}' at line {}:", file, line);
+    panic_debugln!("{}", fmt);
     unsafe {
         sync::disable_preemption();
     }

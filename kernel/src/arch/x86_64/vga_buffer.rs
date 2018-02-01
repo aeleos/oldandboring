@@ -221,13 +221,26 @@ pub struct Info {
     pub height: usize,
     pub width: usize,
     pub address: usize,
+    pub bpp: u8,
+    pub pitch: usize,
+}
+
+impl fmt::Debug for Info {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Info: {:x}, {}x{}x{} {}",
+            self.address, self.height, self.width, self.bpp, self.pitch
+        )
+    }
 }
 
 /// Initializes the buffer for use.
 pub fn init() {
     let info = boot::get_vga_info();
+    // debugln!("{:?}", info);
     WRITER.lock().init(info);
-    clear_screen();
+    // clear_screen();
 }
 
 /// Clears the screen.

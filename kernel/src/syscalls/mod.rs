@@ -3,12 +3,20 @@
 use arch::schedule;
 use elf;
 use memory::VirtualAddress;
-use multitasking::{CURRENT_THREAD, get_current_process, TCB};
+use multitasking::{get_current_process, CURRENT_THREAD, TCB};
 use multitasking::scheduler::READY_LIST;
-use sync::time::{Timestamp, Time};
+use sync::time::{Time, Timestamp};
 
 /// This function accepts the syscalls and calls the corresponding handlers.
-pub fn syscall_handler(num: u64, arg1: u64, arg2: u64, arg3: u64, arg4: u64, arg5: u64, arg6: u64) -> i64 {
+pub fn syscall_handler(
+    num: u64,
+    arg1: u64,
+    arg2: u64,
+    arg3: u64,
+    arg4: u64,
+    arg5: u64,
+    arg6: u64,
+) -> i64 {
     match num {
         0 => print_char(arg1 as u8 as char),
         1 => kill_process(),
@@ -17,12 +25,24 @@ pub fn syscall_handler(num: u64, arg1: u64, arg2: u64, arg3: u64, arg4: u64, arg
         4 => sleep(arg1),
         5 => create_thread(arg1 as VirtualAddress, arg2, arg3, arg4, arg5, arg6),
         6 => kill_thread(),
+        7 => serial_char(arg1 as u8 as char),
+        8 => panic_char(arg1 as u8 as char),
         _ => unknown_syscall(num),
     }
 }
 
 fn print_char(character: char) -> i64 {
     print!("{}", character);
+    0
+}
+
+fn serial_char(character: char) -> i64 {
+    debug!("{}", character);
+    0
+}
+
+fn panic_char(character: char) -> i64 {
+    panic_debug!("{}", character);
     0
 }
 
@@ -66,14 +86,31 @@ fn exec(name_ptr: VirtualAddress, name_length: usize) -> i64 {
     }
 }
 
-fn create_thread(start_address: VirtualAddress, arg1: u64, arg2: u64, arg3: u64, arg4: u64, arg5: u64) -> i64 {
+fn create_thread(
+    start_address: VirtualAddress,
+    arg1: u64,
+    arg2: u64,
+    arg3: u64,
+    arg4: u64,
+    arg5: u64,
+) -> i64 {
     let pid = CURRENT_THREAD.lock().pid;
     let mut pcb = get_current_process();
     let id = pcb.find_thread_id();
 
     match id {
         Some(id) => {
-            let thread = TCB::in_process_with_arguments(pid, id, start_address, &mut pcb, arg1, arg2, arg3, arg4, arg5);
+            let thread = TCB::in_process_with_arguments(
+                pid,
+                id,
+                start_address,
+                &mut pcb,
+                arg1,
+                arg2,
+                arg3,
+                arg4,
+                arg5,
+            );
 
             pcb.add_thread(id);
 
@@ -81,9 +118,7 @@ fn create_thread(start_address: VirtualAddress, arg1: u64, arg2: u64, arg3: u64,
 
             id as i64
         }
-        None => {
-            -1
-        }
+        None => -1,
     }
 }
 
@@ -97,10 +132,10 @@ fn kill_thread() -> i64 {
 
 fn sleep(ms: u64) -> i64 {
     let mut wake_time = Timestamp::get_current();
-    
+
     // TODO: Handle the case of overflow.
     wake_time.offset(Time::Milliseconds(ms as i64));
-    
+
     CURRENT_THREAD.lock().state = ::multitasking::ThreadState::Sleeping(wake_time);
     schedule();
     0

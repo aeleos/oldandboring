@@ -2,6 +2,11 @@ use cpuio::UnsafePort;
 use core::fmt;
 use sync::PreemptableMutex;
 
+pub enum Port {
+    COM1,
+    COM2,
+}
+
 struct Serial {
     data: UnsafePort<u8>,
     interrupt: UnsafePort<u8>,
@@ -73,14 +78,19 @@ impl fmt::Write for Serial {
 }
 
 lazy_static! {
-    static ref SERIAL: PreemptableMutex<Serial> = PreemptableMutex::new(Serial::new(0x3F8));
+    static ref COM1: PreemptableMutex<Serial> = PreemptableMutex::new(Serial::new(0x3F8));
+    static ref COM2: PreemptableMutex<Serial> = PreemptableMutex::new(Serial::new(0x2F8));
 }
 
-pub fn print(args: fmt::Arguments) {
+pub fn print(port: Port, args: fmt::Arguments) {
     use core::fmt::Write;
-    SERIAL.lock().write_fmt(args).unwrap();
+    match port {
+        Port::COM1 => COM1.lock().write_fmt(args).unwrap(),
+        Port::COM2 => COM2.lock().write_fmt(args).unwrap(),
+    }
 }
 
 pub fn init() {
-    SERIAL.lock().init();
+    COM1.lock().init();
+    COM2.lock().init();
 }

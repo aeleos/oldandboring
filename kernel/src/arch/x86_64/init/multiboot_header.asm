@@ -23,6 +23,8 @@ multiboot2_start:
         dd _kernel_end                           ;the address at which the bss segment ends
     address_tag_end:
 
+    align 8
+
     entry_tag_start:
         dw 3
         dw 0
@@ -30,15 +32,16 @@ multiboot2_start:
         dd start                                 ;the entry address for the kernel
     entry_tag_end:
 
-    ; framebuffer_tag_start:
-    ;     ; insert optional multiboot tags here
-    ;     dw 5     ; type = 5
-    ;     dw 0     ; flags
-    ;     dd framebuffer_tag_end - framebuffer_tag_start
-    ;     dd 0 ; width
-    ;     dd 0  ; height
-    ;     dd 0   ; depth
-    ; framebuffer_tag_end:
+    align 8
+
+    framebuffer_tag_start:
+        dw 5     ; type = 5
+        dw 0     ; flags
+        dd framebuffer_tag_end - framebuffer_tag_start
+        dd 0 ; width
+        dd 0  ; height
+        dd 0   ; depth
+    framebuffer_tag_end:
 
     align 8
 

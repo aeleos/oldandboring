@@ -37,7 +37,7 @@ macro_rules! print {
 #[macro_export]
 macro_rules! debug {
     ($($arg:tt)*) => ({
-        $crate::drivers::serial::print(format_args!($($arg)*));
+        $crate::drivers::serial::print($crate::drivers::serial::Port::COM1, format_args!($($arg)*));
     });
 }
 
@@ -45,4 +45,17 @@ macro_rules! debug {
 macro_rules! debugln {
     ($fmt:expr) => (debug!(concat!($fmt, "\n")));
     ($fmt:expr, $($arg:tt)*) => (debug!(concat!($fmt, "\n"), $($arg)*));
+}
+
+#[macro_export]
+macro_rules! panic_debug {
+    ($($arg:tt)*) => ({
+        $crate::drivers::serial::print($crate::drivers::serial::Port::COM2, format_args!($($arg)*));
+    });
+}
+
+#[macro_export]
+macro_rules! panic_debugln {
+    ($fmt:expr) => (panic_debug!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (panic_debug!(concat!($fmt, "\n"), $($arg)*));
 }

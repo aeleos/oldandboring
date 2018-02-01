@@ -294,6 +294,7 @@ impl Header {
         if !header.is_executable() {
             return Err(ElfError::WrongType);
         }
+        debugln!("{:?}", header);
 
         Ok(header)
     }
@@ -411,7 +412,6 @@ impl<'a> Iterator for ProgramHeaderIterator<'a> {
             };
 
             self.current_header_index += 1;
-
             Some(program_header)
         }
     }

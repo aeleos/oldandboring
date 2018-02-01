@@ -31,7 +31,7 @@ $(executable): cargo
 
 .PHONY: cargo
 cargo:
-	$(rust_compiler) build $(rust_compiler_flags)
+	RUST_TARGET_PATH=`pwd` $(rust_compiler) build $(rust_compiler_flags)
 
 .PHONY: copy_to_target
 copy_to_target: $(executable)

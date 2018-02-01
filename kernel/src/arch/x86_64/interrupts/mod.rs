@@ -38,6 +38,20 @@ lazy_static! {
         idt.divide_by_zero.set_handler_fn(divide_by_zero_handler);
         idt.breakpoint.set_handler_fn(breakpoint_handler);
         idt.page_fault.set_handler_fn(page_fault_handler);
+        idt.general_protection_fault.set_handler_fn(general_protection_fault_handler);
+        // idt.non_maskable_interrupt.set_handler_fn(empty_handler);
+        // idt.overflow.set_handler_fn(empty_handler);
+        // idt.bound_range_exceeded.set_handler_fn(empty_handler);
+        // idt.invalid_opcode.set_handler_fn(empty_handler);
+        // idt.device_not_available.set_handler_fn(empty_handler);
+        // idt.stack_segment_fault.set_handler_fn(empty_handler_with_error);
+        // idt.x87_floating_point.set_handler_fn(empty_handler);
+        // idt.alignment_check.set_handler_fn(empty_handler_with_error);
+        // idt.machine_check.set_handler_fn(empty_handler);
+        // idt.simd_floating_point.set_handler_fn(empty_handler);
+        // idt.virtualization.set_handler_fn(empty_handler);
+        // idt.security_exception.set_handler_fn(empty_handler_with_error);
+
         unsafe {
             idt.double_fault.set_handler_fn(double_fault_handler)
                 .set_stack_index(0);
@@ -102,15 +116,29 @@ macro_rules! irq_interrupt {
 
 /// The divide by zero exception handler of the kernel.
 extern "x86-interrupt" fn divide_by_zero_handler(stack_frame: &mut ExceptionStackFrame) {
-    debugln!("Divide by zero exception.");
-    debugln!("{:?}", stack_frame);
+    panic_debugln!("Divide by zero exception.");
+    panic_debugln!("{:?}", stack_frame);
     loop {}
 }
 
 /// The breakpoint exception handler of the kernel.
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut ExceptionStackFrame) {
-    debugln!("Breakpoint exception.");
-    debugln!("{:?}", stack_frame);
+    panic_debugln!("Breakpoint exception.");
+    panic_debugln!("{:?}", stack_frame);
+    loop {}
+}
+
+/// The breakpoint exception handler of the kernel.
+extern "x86-interrupt" fn general_protection_fault_handler(
+    stack_frame: &mut ExceptionStackFrame,
+    error_code: u64,
+) {
+    panic_debugln!("GENERAL PROTECTION FAULT");
+    panic_debugln!("{:?}", stack_frame);
+    panic_debugln!("Error code: 0x{:x}", error_code);
+    use multitasking::{CURRENT_THREAD, TCB};
+    let tcb: &::sync::PreemptableMutex<TCB> = &CURRENT_THREAD;
+    panic_debugln!("Running thread: {:?}", tcb);
     loop {}
 }
 
@@ -119,12 +147,12 @@ extern "x86-interrupt" fn double_fault_handler(
     stack_frame: &mut ExceptionStackFrame,
     error_code: u64,
 ) {
-    debugln!("DOUBLE FAULT!");
-    debugln!("{:?}", stack_frame);
-    debugln!("Error code: 0x{:x}", error_code);
+    panic_debugln!("DOUBLE FAULT!");
+    panic_debugln!("{:?}", stack_frame);
+    panic_debugln!("Error code: 0x{:x}", error_code);
     use multitasking::{CURRENT_THREAD, TCB};
     let tcb: &::sync::PreemptableMutex<TCB> = &CURRENT_THREAD;
-    debugln!("Running thread: {:?}", tcb);
+    panic_debugln!("Running thread: {:?}", tcb);
     loop {}
 }
 
@@ -149,6 +177,8 @@ extern "x86-interrupt" fn schedule_interrupt(_: &mut ExceptionStackFrame) {
 
 /// An interrupt handler that does nothing.
 extern "x86-interrupt" fn empty_handler(_: &mut ExceptionStackFrame) {}
+
+extern "x86-interrupt" fn empty_handler_with_error(_: &mut ExceptionStackFrame, error_code: u64) {}
 
 irq_interrupt!(
 /// The handler for the lapic timer interrupt.
