@@ -68,7 +68,7 @@ impl<T> PreemptableMutex<T> {
         // We know statically that there are no outstanding references to
         // `self` so there's no need to lock.
         let PreemptableMutex { data, .. } = self;
-        unsafe { data.into_inner() }
+        data.into_inner()
     }
 }
 

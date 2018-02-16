@@ -16,6 +16,7 @@ pub fn main() {
         let b: f32 = 6.654654;
         let c = a * b;
         debugln!("start");
+
         //
         // debugln!("normalize test: {}, {}", -1236.7, normalizef32(-1236.7));
         //

@@ -14,7 +14,6 @@
 #![feature(global_allocator)]
 #![feature(abi_x86_interrupt)]
 #![no_std]
-#![warn(missing_docs)]
 #![default_lib_allocator]
 #![feature(ptr_internals)]
 //! The BoringOS operating system kernel.

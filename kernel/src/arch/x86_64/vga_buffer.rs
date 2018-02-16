@@ -159,7 +159,7 @@ impl Writer {
         for i in 0..self.buffer.width {
             let char_below = self.buffer.read_char(line, i);
 
-            self.buffer.write_char((line - 1), i, char_below);
+            self.buffer.write_char(line - 1, i, char_below);
         }
     }
 
