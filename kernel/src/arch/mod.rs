@@ -21,6 +21,8 @@ macro_rules! export_arch {
         pub use self::$name::sync::enable_interrupts;
         pub use self::$name::sync::get_current_timestamp;
 
+        pub use self::$name::interrupts::register_kb_interrupt;
+
         pub use self::$name::memory::init as memory_init;
         pub use self::$name::memory::map_page;
         pub use self::$name::memory::map_page_at;

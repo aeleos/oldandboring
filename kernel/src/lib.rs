@@ -13,6 +13,7 @@
 #![feature(allocator_api)]
 #![feature(global_allocator)]
 #![feature(abi_x86_interrupt)]
+#![feature(fn_traits)]
 #![no_std]
 #![default_lib_allocator]
 #![feature(ptr_internals)]

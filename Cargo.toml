@@ -1,0 +1,15 @@
+# Cargo.toml
+[workspace]
+members = [
+    "kernel",
+    "init",
+    "test",
+    "std",
+    "mkinitramfs",
+]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

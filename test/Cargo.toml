@@ -20,8 +20,3 @@ version = "0.1"
 
 [lib]
 crate-type = ["staticlib"]
-[profile.dev]
-panic = "abort"
-
-[profile.release]
-panic = "abort"

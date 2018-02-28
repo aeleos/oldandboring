@@ -21,7 +21,7 @@ pub enum StackType {
 }
 
 /// Determines the type of accesses possible for this stack.
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum AccessType {
     /// The stack can be accessed by usermode code.
     UserAccessible,
@@ -30,6 +30,7 @@ pub enum AccessType {
 }
 
 /// Represents a stack.
+#[derive(Clone)]
 pub struct Stack {
     /// Represents the top address of the stack.
     top_address: VirtualAddress,
@@ -77,6 +78,10 @@ impl Stack {
             }
         }
     }
+
+    // pub fn pop_in<T>(address_space &mut AddressSpace, stack_pointer: &mut VirtualAddress) -> T {
+    //
+    // }
 
     /// Creates a new stack of size zero with the given start address.
     pub fn new(

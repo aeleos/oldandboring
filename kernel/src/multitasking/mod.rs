@@ -7,7 +7,7 @@ mod cpu_local;
 mod pcb;
 
 pub use self::cpu_local::{CPULocal, CPULocalMut};
-pub use self::pcb::{get_current_process, PCB};
+pub use self::pcb::{get_current_process, get_process, PCB};
 pub use self::scheduler::CURRENT_THREAD;
 pub use self::stack::{Stack, StackType};
 pub use self::tcb::{ThreadState, TCB};

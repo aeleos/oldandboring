@@ -27,6 +27,7 @@ pub fn syscall_handler(
         6 => kill_thread(),
         7 => serial_char(arg1 as u8 as char),
         8 => panic_char(arg1 as u8 as char),
+        9 => register_kb_interrupt(arg1 as VirtualAddress, arg2),
         _ => unknown_syscall(num),
     }
 }
@@ -120,6 +121,12 @@ fn create_thread(
         }
         None => -1,
     }
+}
+
+fn register_kb_interrupt(start_address: VirtualAddress, arg1: u64) -> i64 {
+    let pid = CURRENT_THREAD.lock().pid;
+    ::arch::register_kb_interrupt(pid, start_address, arg1);
+    0
 }
 
 fn kill_thread() -> i64 {

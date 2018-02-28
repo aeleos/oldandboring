@@ -9,9 +9,9 @@ prog_name := init
 
 target_dir := ../target
 
-rust_lib := target/$(target)/$(build_type)/lib$(prog_name).a
+rust_lib := ../target/$(target)/$(build_type)/lib$(prog_name).a
 
-executable := target/$(target)/$(build_type)/$(prog_name)
+executable := ../target/$(target)/$(build_type)/$(prog_name)
 
 rust_compiler_flags := --target $(target)
 ifeq ($(build_type),release)

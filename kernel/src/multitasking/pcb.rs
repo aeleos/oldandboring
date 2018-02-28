@@ -129,3 +129,10 @@ pub fn get_current_process<'a>() -> ProcessLock<'a> {
         key: pid,
     }
 }
+
+pub fn get_process<'a>(pid: ProcessID) -> ProcessLock<'a> {
+    ProcessLock {
+        guard: PROCESS_LIST.lock(),
+        key: pid,
+    }
+}

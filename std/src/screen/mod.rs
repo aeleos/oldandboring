@@ -3,7 +3,7 @@ mod primitive;
 use volatile::Volatile;
 use core::ptr::Unique;
 use core::marker::Copy;
-use spin::{Mutex, Once};
+pub use spin::{Mutex, Once};
 use core::{cmp, slice};
 use core::mem::size_of;
 use core::mem;

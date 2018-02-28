@@ -1,6 +1,7 @@
 #![feature(from_ref)]
 #![feature(asm)]
 #![feature(core_intrinsics)]
+#![feature(abi_x86_interrupt)]
 #![no_std]
 #![feature(lang_items)]
 #[macro_use]
@@ -12,7 +13,12 @@ mod video;
 
 #[no_mangle]
 pub fn main() {
+    // boringos_std::thread::new_thread(new_thread, 1, 2, 3, 4);
+
     boringos_std::process::exec("/bin/test").unwrap();
+
+    // debugln!("here");
+    // boringos_std::process::register_kb_interrupt(keyboard_test);
 
     boringos_std::screen::init();
     // boringos_std::screen::test();
@@ -25,6 +31,9 @@ pub fn main() {
 
     loop {
         boringos_std::thread::sleep(500);
+        // if let Some(kb) = IRQ8_INTERRUPT_TICKS.lock() {
+        // debugln!("{}", *IRQ8_INTERRUPT_TICKS.lock());
+        // }
         debugln!("Test");
     }
 }

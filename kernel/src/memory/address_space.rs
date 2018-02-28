@@ -95,7 +95,7 @@ impl AddressSpace {
     }
 
     /// Returns the segment that contains the address with length bytes space after, if it exists.
-    fn get_segment(&self, address: VirtualAddress, length: VirtualAddress) -> Option<&Segment> {
+    pub fn get_segment(&self, address: VirtualAddress, length: VirtualAddress) -> Option<&Segment> {
         for segment in &self.segments {
             if segment.contains(address) && segment.contains(address + length - 1) {
                 return Some(segment);
@@ -174,6 +174,7 @@ pub struct Segment {
     segment_type: SegmentType,
 }
 
+#[allow(dead_code)]
 impl Segment {
     /// Creates a new segment with the given parameters.
     pub fn new(
@@ -188,6 +189,11 @@ impl Segment {
             flags,
             segment_type,
         }
+    }
+
+    /// Returns the start address of the segment
+    pub fn start(&self) -> VirtualAddress {
+        self.start
     }
 
     /// Checks if the address is contained within the segment.

@@ -9,7 +9,7 @@ target_dir := ../target
 
 kernel := $(build_dir)/kernel-$(arch).bin
 iso := $(build_dir)/os-$(arch).iso
-rust_lib := target/$(target)/$(build_type)/libboringos.a
+rust_lib := ../target/$(target)/$(build_type)/libboringos.a
 
 asm_folders := $(src_dir)/arch/$(arch)/init
 
@@ -103,4 +103,4 @@ $(assembly_object_files): $(build_dir)/%.o : $(src_dir)/%.asm
 
 .PHONY: cargo
 cargo:
-	RUST_TARGET_PATH=`pwd` $(rust_compiler) build $(rust_compiler_flags) 
+	RUST_TARGET_PATH=`pwd` $(rust_compiler) build $(rust_compiler_flags)

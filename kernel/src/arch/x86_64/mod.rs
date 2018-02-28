@@ -5,7 +5,7 @@
 pub mod vga_buffer;
 pub mod memory;
 pub mod sync;
-mod interrupts;
+pub mod interrupts;
 pub mod context;
 mod syscalls;
 mod gdt;

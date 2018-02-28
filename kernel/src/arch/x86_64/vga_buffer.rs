@@ -104,6 +104,7 @@ pub struct Writer {
     buffer: Buffer,
 }
 
+#[allow(dead_code)]
 impl Writer {
     /// Writes the given character to the buffer.
     pub fn write_char(&mut self, byte: u8) {
@@ -244,6 +245,7 @@ pub fn init() {
 }
 
 /// Clears the screen.
+#[allow(dead_code)]
 pub fn clear_screen() {
     WRITER.lock().clear_screen();
 }

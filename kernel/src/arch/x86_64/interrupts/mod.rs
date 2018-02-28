@@ -7,11 +7,15 @@ pub use self::lapic::issue_self_interrupt;
 use super::sync::CLOCK;
 use multitasking::scheduler::schedule_next_thread;
 use sync::PreemptableMutex;
+use spin::Once;
 use x86_64::instructions::interrupts;
 use x86_64::registers::control_regs;
 use x86_64::structures::idt::{ExceptionStackFrame, Idt, PageFaultErrorCode};
 use x86_64::instructions::port::{inb, outb};
-
+use x86_64::PrivilegeLevel;
+use memory::VirtualAddress;
+use multitasking::{get_process, ProcessID, TCB};
+use multitasking::scheduler::READY_LIST;
 /// The vector for the scheduling interrupt.
 pub const SCHEDULE_INTERRUPT_NUM: u8 = 0x20;
 
@@ -28,6 +32,18 @@ const SPURIOUS_INTERRUPT_HANDLER_NUM: u8 = 0x2f;
 
 /// The number of IRQ8 interrupt ticks that have passed since it was enabled.
 static IRQ8_INTERRUPT_TICKS: PreemptableMutex<u64> = PreemptableMutex::new(0);
+
+static mut KEYBOARD_INTERRUPT: Once<PreemptableMutex<KbIntInfo>> = Once::new();
+
+// lazy_static! {
+//     /// The list of all the currently running processes.
+//     static ref KEYBOARD_INTERRUPT: PreemptableMutex<KbIntInfo> = PreemptableMutex::new({
+//         let mut map = BTreeMap::new();
+//         map.insert(0, PCB::idle_pcb());
+//
+//         map
+//     });
+// }
 
 lazy_static! {
     /// The interrupt descriptor table used by the kernel.
@@ -63,7 +79,8 @@ lazy_static! {
         }
 
         // IRQ interrupts that are explicitly handled.
-        idt[IRQ_INTERRUPT_NUMS[1] as usize].set_handler_fn(irq1_handler);
+        idt[IRQ_INTERRUPT_NUMS[1] as usize]
+            .set_handler_fn(irq1_handler).set_privilege_level(PrivilegeLevel::Ring3);
         idt[IRQ_INTERRUPT_NUMS[8] as usize].set_handler_fn(irq8_handler);
 
         // The schedule interrupt is invoked for every reschedule.
@@ -159,9 +176,9 @@ extern "x86-interrupt" fn double_fault_handler(
 /// The page fault handler of the kernel.
 extern "x86-interrupt" fn page_fault_handler(
     stack_frame: &mut ExceptionStackFrame,
-    _error_code: PageFaultErrorCode,
+    error_code: PageFaultErrorCode,
 ) {
-    ::interrupts::page_fault_handler(control_regs::cr2().0, stack_frame.instruction_pointer.0);
+    ::interrupts::page_fault_handler(control_regs::cr2().0, stack_frame, error_code);
 }
 
 /// The software interrupt handler that invokes schedule operations.
@@ -176,9 +193,11 @@ extern "x86-interrupt" fn schedule_interrupt(_: &mut ExceptionStackFrame) {
 }
 
 /// An interrupt handler that does nothing.
+#[allow(dead_code)]
 extern "x86-interrupt" fn empty_handler(_: &mut ExceptionStackFrame) {}
 
-extern "x86-interrupt" fn empty_handler_with_error(_: &mut ExceptionStackFrame, error_code: u64) {}
+#[allow(dead_code)]
+extern "x86-interrupt" fn empty_handler_with_error(_: &mut ExceptionStackFrame, _: u64) {}
 
 irq_interrupt!(
 /// The handler for the lapic timer interrupt.
@@ -205,7 +224,54 @@ fn irq8_handler {
 irq_interrupt!(
 /// The handler for IRQ1.
 fn irq1_handler {
-    let scancode = unsafe { ::x86_64::instructions::port::inb(0x60) };
+    // let scancode = unsafe { ::x86_64::instructions::port::inb(0x60) };
 
-    ::interrupts::keyboard_interrupt(scancode);
+    if let Some(kb_int_info_lock) =unsafe { KEYBOARD_INTERRUPT.try() }{
+        let mut kb_int_info = kb_int_info_lock.lock();
+
+        let pid = kb_int_info.pid;
+        let mut pcb = get_process(pid);
+        let id = pcb.find_thread_id();
+
+        match id {
+            Some(id) => {
+                let thread = TCB::in_process_with_arguments(
+                    pid,
+                    id,
+                    kb_int_info.start_address,
+                    &mut pcb,
+                    kb_int_info.arg1,
+                    0,
+                    0,
+                    0,
+                    0,
+                );
+
+                pcb.add_thread(id);
+
+                READY_LIST.lock().push(thread);
+
+                // id as i64
+            }
+            None => (),
+        }
+    }
 });
+
+struct KbIntInfo {
+    pid: ProcessID,
+    start_address: usize,
+    arg1: u64,
+}
+
+pub fn register_kb_interrupt(pid: ProcessID, start_address: VirtualAddress, arg1: u64) {
+    unsafe {
+        KEYBOARD_INTERRUPT.call_once(|| {
+            PreemptableMutex::new(KbIntInfo {
+                pid,
+                start_address,
+                arg1,
+            })
+        });
+    }
+}

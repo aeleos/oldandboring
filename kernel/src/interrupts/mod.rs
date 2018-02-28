@@ -7,8 +7,9 @@
 use arch::schedule;
 use memory::VirtualAddress;
 use multitasking::CURRENT_THREAD;
-use multitasking::scheduler::{SLEEPING_LIST, READY_LIST};
+use multitasking::scheduler::{READY_LIST, SLEEPING_LIST};
 use sync::time::Timestamp;
+use x86_64::structures::idt::PageFaultErrorCode;
 
 /// The timer interrupt handler for the system.
 pub fn timer_interrupt() {
@@ -30,25 +31,26 @@ pub fn timer_interrupt() {
     schedule();
 }
 
-/// The keyboard interrupt handler.
-pub fn keyboard_interrupt(scancode: u8) {
-    if scancode == 1 {
-        unsafe { ::sync::disable_preemption() };
-        loop {}
-    }
-    debugln!("Key: <{}>", scancode);
-}
-
 /// The page fault handler.
-pub fn page_fault_handler(address: VirtualAddress, program_counter: VirtualAddress) {
+pub fn page_fault_handler(
+    address: VirtualAddress,
+    stack_frame: &mut ::x86_64::structures::idt::ExceptionStackFrame,
+    error_code: PageFaultErrorCode,
+) {
     unsafe { ::sync::disable_preemption() };
     let current_thread = CURRENT_THREAD.lock();
 
-    debugln!("Page fault in process {} (thread {}) at address {:x} (PC: {:x})",
-             current_thread.pid,
-             current_thread.id,
-             address,
-             program_counter);
+    debugln!(
+        "Page fault in process {} (thread {}) at address {:x} (PC: {:x})",
+        current_thread.pid,
+        current_thread.id,
+        address,
+        stack_frame.instruction_pointer.0
+    );
+
+    debugln!("stack_frame: {:?}", stack_frame);
+
+    debugln!("error_code: {:?}", error_code);
 
     debugln!("Page flags: {:?}", ::memory::get_page_flags(address));
     loop {}

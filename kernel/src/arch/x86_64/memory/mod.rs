@@ -10,10 +10,10 @@ pub use self::address_space_manager::new_address_space_manager;
 pub use self::paging::get_free_memory_size;
 
 /// The maximum address of the lower part of the virtual address space.
-const VIRTUAL_LOW_MAX_ADDRESS: VirtualAddress = 0x00007fffffffffff;
+pub const VIRTUAL_LOW_MAX_ADDRESS: VirtualAddress = 0x00007fffffffffff;
 
 /// The minimum address of the higher part of the virtual address space.
-const VIRTUAL_HIGH_MIN_ADDRESS: VirtualAddress = 0xffff800000000000;
+pub const VIRTUAL_HIGH_MIN_ADDRESS: VirtualAddress = 0xffff800000000000;
 
 /// The top of the stack after the kernel has been remapped.
 pub const FINAL_STACK_TOP: VirtualAddress = 0xfffffe8000000000;

@@ -1,6 +1,6 @@
 //! Provides saving and restoring of architecture specific execution context.
 
-use super::gdt::{USER_CODE_SEGMENT, USER_DATA_SEGMENT, TSS};
+use super::gdt::{TSS, USER_CODE_SEGMENT, USER_DATA_SEGMENT};
 use super::interrupts::lapic;
 use core::mem::size_of;
 use memory::{PhysicalAddress, VirtualAddress};
@@ -11,54 +11,61 @@ use x86_64::structures::idt::ExceptionStackFrame;
 
 // TODO: Floating point state is not saved yet.
 /// Saves the an execution context.
+#[derive(Clone)]
 pub struct Context {
     pub kernel_stack_pointer: VirtualAddress,
-    base_pointer: VirtualAddress,
-    page_table_address: PhysicalAddress
+    pub base_pointer: VirtualAddress,
+    page_table_address: PhysicalAddress,
 }
 
 impl Context {
     /// Creates a new context.
-    pub fn new(function: VirtualAddress,
-               stack_pointer: VirtualAddress,
-               mut kernel_stack_pointer: VirtualAddress,
-               address_space: &mut AddressSpace,
-               arg1: u64,
-               arg2: u64,
-               arg3: u64,
-               arg4: u64,
-               arg5: u64)
-               -> Context {
+    pub fn new(
+        function: VirtualAddress,
+        stack_pointer: VirtualAddress,
+        mut kernel_stack_pointer: VirtualAddress,
+        address_space: &mut AddressSpace,
+        arg1: u64,
+        arg2: u64,
+        arg3: u64,
+        arg4: u64,
+        arg5: u64,
+    ) -> Context {
         use x86_64::registers::flags::Flags;
 
         let stack_frame = ExceptionStackFrame {
             instruction_pointer: ::x86_64::VirtualAddress(function as usize),
             code_segment: USER_CODE_SEGMENT.0 as u64,
-            cpu_flags: (Flags::IF | Flags::A1).bits() as u64,
+            cpu_flags: (Flags::IF | Flags::A1 | Flags::IOPL3).bits() as u64,
             stack_pointer: ::x86_64::VirtualAddress(stack_pointer as usize),
-            stack_segment: USER_DATA_SEGMENT.0 as u64
+            stack_segment: USER_DATA_SEGMENT.0 as u64,
         };
 
         unsafe {
-            set_initial_stack(&mut kernel_stack_pointer,
-                              stack_frame,
-                              address_space,
-                              arg1,
-                              arg2,
-                              arg3,
-                              arg4,
-                              arg5);
+            set_initial_stack(
+                &mut kernel_stack_pointer,
+                stack_frame,
+                address_space,
+                arg1,
+                arg2,
+                arg3,
+                arg4,
+                arg5,
+            );
         }
 
         Context {
             kernel_stack_pointer,
             base_pointer: kernel_stack_pointer,
-            page_table_address: unsafe { address_space.get_page_table_address() }
+            page_table_address: unsafe { address_space.get_page_table_address() },
         }
     }
 
     /// Creates a context for an idle thread.
-    pub fn idle_context(mut stack_pointer: VirtualAddress, page_table_address: PhysicalAddress) -> Context {
+    pub fn idle_context(
+        mut stack_pointer: VirtualAddress,
+        page_table_address: PhysicalAddress,
+    ) -> Context {
         unsafe {
             set_idle_stack(&mut stack_pointer);
         }
@@ -66,7 +73,7 @@ impl Context {
         Context {
             kernel_stack_pointer: stack_pointer as usize,
             base_pointer: stack_pointer as usize,
-            page_table_address
+            page_table_address,
         }
     }
 }
@@ -108,14 +115,16 @@ unsafe fn set_idle_stack(stack_pointer: &mut VirtualAddress) {
 ///
 /// # Safety
 /// - Make sure that the stack pointer is valid.
-unsafe fn set_initial_stack(stack_pointer: &mut VirtualAddress,
-                     stack_frame: ExceptionStackFrame,
-                     address_space: &mut AddressSpace,
-                     arg1: u64,
-                     arg2: u64,
-                     arg3: u64,
-                     arg4: u64,
-                     arg5: u64) {
+pub unsafe fn set_initial_stack(
+    stack_pointer: &mut VirtualAddress,
+    stack_frame: ExceptionStackFrame,
+    address_space: &mut AddressSpace,
+    arg1: u64,
+    arg2: u64,
+    arg3: u64,
+    arg4: u64,
+    arg5: u64,
+) {
     Stack::push_in(address_space, stack_pointer, stack_frame);
     Stack::push_in(address_space, stack_pointer, arg5);
     Stack::push_in(address_space, stack_pointer, arg4);
@@ -142,11 +151,13 @@ pub unsafe fn switch_context(old_context: &mut Context, new_context: &Context) {
         .base_stack_pointer;
     TSS.as_mut().privilege_stack_table[0] = ::x86_64::VirtualAddress(base_sp);
 
-    switch(&mut old_context.kernel_stack_pointer,
-           &mut old_context.base_pointer,
-           new_sp,
-           new_bp,
-           new_context.page_table_address);
+    switch(
+        &mut old_context.kernel_stack_pointer,
+        &mut old_context.base_pointer,
+        new_sp,
+        new_bp,
+        new_context.page_table_address,
+    );
 }
 
 /// This is the function actually performing the switch.
@@ -155,11 +166,13 @@ pub unsafe fn switch_context(old_context: &mut Context, new_context: &Context) {
 /// - Should only be called by switch_context.
 #[naked]
 #[inline(never)]
-unsafe extern "C" fn switch(old_sp: &mut usize,
-                            old_bp: &mut usize,
-                            new_sp: usize,
-                            new_bp: usize,
-                            new_page_table: usize) {
+unsafe extern "C" fn switch(
+    old_sp: &mut usize,
+    old_bp: &mut usize,
+    new_sp: usize,
+    new_bp: usize,
+    new_page_table: usize,
+) {
     asm!("mov [rdi], rsp
           mov [rsi], rbp
           mov rsp, rdx

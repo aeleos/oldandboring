@@ -31,10 +31,6 @@ git = "https://github.com/aeleos/multiboot2-elf64"
 
 [lib]
 crate-type = ["staticlib"]
-[profile.dev]
-panic = "abort"
 
-[profile.release]
-panic = "abort"
 [target."cfg(target_arch = \"x86_64\")".dependencies]
 x86_64 = "0.1.2"
