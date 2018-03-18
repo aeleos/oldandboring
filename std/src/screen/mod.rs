@@ -60,6 +60,7 @@ impl Pixel {
         }
     }
 
+    #[inline(always)]
     fn new_from_arr(colors: [u8; 4]) -> u32 {
         unsafe { mem::transmute::<[u8; 4], u32>(colors) }
     }
@@ -100,10 +101,12 @@ impl Buffer {
         self.height
     }
 
+    #[inline(always)]
     fn offset(&self, x: u32, y: u32) -> isize {
         (x + y * 1024) as isize
     }
 
+    #[inline(always)]
     pub unsafe fn write(&mut self, x: u32, y: u32, color: u32) {
         if x >= self.width || y >= self.height {
             return;
@@ -116,6 +119,7 @@ impl Buffer {
         );
     }
 
+    #[inline(always)]
     pub unsafe fn write_buf(&mut self, x: u32, y: u32, buf: &[u32]) {
         if x >= self.width || y >= self.height {
             return;
@@ -184,10 +188,13 @@ impl Buffer {
         }
     }
 
+    #[inline(always)]
     pub unsafe fn vertical_line(&mut self, x: u32, ytop: u32, ybottom: u32, color: u32) {
         if ytop >= ybottom || x >= self.width || ytop >= self.height {
             return;
         }
+
+        // debugln!("x: {}, ytop: {}, ybottom: {}", x, ytop, ybottom);
 
         // let start = self.onscreen.as_mut_ptr();
         // let mut location_ptr = start.offset(self.offset(x, ytop));
@@ -201,6 +208,7 @@ impl Buffer {
         // fast_set32(onscreen_ptr as *mut u32, color, 1);
     }
 
+    #[inline(always)]
     pub unsafe fn horizontal_line(&mut self, xtop: u32, xbottom: u32, y: u32, color: u32) {
         if xtop >= xbottom || xtop >= self.width || y >= self.height {
             return;
@@ -211,6 +219,7 @@ impl Buffer {
         fast_set32(location_ptr as *mut u32, color, (xtop - xbottom) as usize);
     }
 
+    #[inline(always)]
     pub unsafe fn fill_rect(
         &mut self,
         mut x1: u32,
@@ -244,6 +253,7 @@ impl Buffer {
         }
     }
 
+    #[inline(always)]
     pub unsafe fn sync(&mut self) {
         // let start_y = cmp::min(self.height, y);
         // let end_y = cmp::min(self.height, y + h);

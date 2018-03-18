@@ -20,7 +20,7 @@ raw-cpuid = "3.0.0"
 rlibc = "1.0.0"
 volatile = "0.2.3"
 spin = "0.4.6"
-
+boring-core = { path = "../boring-core" }
 
 [dependencies.lazy_static]
 features = ["spin_no_std"]

@@ -17,18 +17,22 @@ pub const FACTORIAL_7: u32 = 5040u32;
 pub const FACTORIAL_8: u32 = 40320u32;
 pub const FACTORIAL_9: u32 = 362880u32;
 
+#[inline(always)]
 pub fn radiansf32(degrees: f32) -> f32 {
     degrees * PI32 / 180.0
 }
 
+#[inline(always)]
 pub fn radiansf64(degrees: f64) -> f64 {
     degrees * PI64 / 180.0
 }
 
+#[inline(always)]
 pub fn degreesf32(radians: f32) -> f32 {
     radians * PI32 / 180.0
 }
 
+#[inline(always)]
 pub fn degreesf64(radians: f64) -> f64 {
     radians * PI64 / 180.0
 }
@@ -66,6 +70,7 @@ pub fn degreesf64(radians: f64) -> f64 {
 //     return degrees;
 // }
 
+#[inline(always)]
 pub fn normalizef32(mut degrees: f32) -> f32 {
     if degrees > 360.0 || degrees < -360.0 {
         let rounded = degrees as i32;
@@ -88,6 +93,7 @@ pub fn normalizef32(mut degrees: f32) -> f32 {
     return degrees;
 }
 
+#[inline(always)]
 pub fn normalizef64(mut degrees: f64) -> f64 {
     if degrees > 360.0 || degrees < -360.0 {
         let rounded = degrees as i64;
@@ -111,6 +117,7 @@ pub fn normalizef64(mut degrees: f64) -> f64 {
     return degrees;
 }
 
+#[inline(always)]
 pub fn powf64(x: f64, pow: f64) -> f64 {
     let mut ret = x;
     for _ in 0..pow as u64 {
@@ -119,6 +126,7 @@ pub fn powf64(x: f64, pow: f64) -> f64 {
     ret
 }
 
+#[inline(always)]
 pub fn powf32(x: f32, pow: f32) -> f32 {
     let mut ret = x;
     for _ in 0..pow as u32 {
@@ -132,6 +140,7 @@ pub fn powf32(x: f32, pow: f32) -> f32 {
 // 	return (x * factorial(x - 1));
 // }
 
+#[inline(always)]
 pub fn factorialf32(x: u32) -> u32 {
     if x == 0 {
         return 1;
@@ -139,6 +148,7 @@ pub fn factorialf32(x: u32) -> u32 {
     (x * factorialf32(x - 1))
 }
 
+#[inline(always)]
 pub fn factorialf64(x: u64) -> u64 {
     if x == 0 {
         return 1;
@@ -155,6 +165,7 @@ pub fn factorialf64(x: u64) -> u64 {
 // 	return ret;
 // }
 
+#[inline(always)]
 pub fn sinf64(x: f64) -> f64 {
     let mut ret: f64 = x;
     let mut x_temp = x * x * x;
@@ -166,6 +177,7 @@ pub fn sinf64(x: f64) -> f64 {
     ret
 }
 
+#[inline(always)]
 pub fn sinf32(x: f32) -> f32 {
     let mut ret: f32 = x;
     let mut x_temp = x * x * x;
@@ -186,6 +198,7 @@ pub fn sinf32(x: f32) -> f32 {
 // 	return ret;
 // }
 
+#[inline(always)]
 pub fn cosf64(x: f64) -> f64 {
     let mut ret: f64 = 1.0;
     let mut x_temp = x * x;
@@ -197,6 +210,7 @@ pub fn cosf64(x: f64) -> f64 {
     ret
 }
 
+#[inline(always)]
 pub fn cosf32(x: f32) -> f32 {
     let mut ret: f32 = 1.0;
     let mut x_temp = x * x;

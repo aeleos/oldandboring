@@ -183,14 +183,13 @@ pub struct Info {
     pub pitch: usize,
 }
 
-
 pub fn init() {
     let info = Info {
-        height: 768,
-        width: 1024,
+        height: 200,
+        width: 320,
         address: 0xffff8000fd000000,
-        bpp: 24,
-        pitch: 3072,
+        bpp: 32,
+        pitch: 1280,
     };
 
     SCREEN.call_once(|| Mutex::new(Buffer::new(info)));

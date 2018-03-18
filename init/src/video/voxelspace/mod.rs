@@ -7,28 +7,29 @@ use core;
 
 // pub static mut YBUFFER: [u32; 1024] = [768; 1024];
 
-struct Camera {
-    x: i32,
-    y: i32,
+pub struct Camera {
+    pub x: i32,
+    pub y: i32,
     pub height: u8,
-    angle: f32,
-    horizon: f32,
-    distance: f32,
+    pub angle: f32,
+    pub horizon: f32,
+    pub distance: f32,
 }
 
 impl Camera {
-    fn new() -> Camera {
+    pub fn new() -> Camera {
         Camera {
             x: 512,
             y: 512,
-            height: 150,
+            height: 50,
             angle: 0.0,
-            horizon: 100.0,
-            distance: 300.0,
+            horizon: 150.0,
+            distance: 200.0,
         }
     }
 
-    unsafe fn render(&mut self, scale_height: f32) {
+    #[inline(always)]
+    pub unsafe fn render(&mut self, scale_height: f32) {
         let mut buffer = SCREEN.try().unwrap().lock();
         let screen_width = buffer.width();
         let screen_height = buffer.height();
@@ -84,9 +85,8 @@ impl Camera {
                 plx += dx;
                 ply += dy;
             }
-
             z += dz;
-            dz += 0.05;
+            dz += 0.01;
         }
         buffer.sync();
         // debugln!("{:?}", Timestamp::get_current());
@@ -117,8 +117,8 @@ pub fn test() {
         // camera.angle = 2.0;
 
         // camera.x = 128;
-        for i in -180..180 {
-            camera.angle = i as f32;
+        for i in -90..90 {
+            camera.angle = (i * 2) as f32;
             camera.render(240.0);
         }
         // camera.angle = core::f32::consts::PI * (110 as f32) / 180.0;
@@ -147,11 +147,11 @@ pub fn test() {
         // );
         // camera.render(240.0);
         // camera.draw_angle(110);
-        for i in 512..1024 {
-            camera.y = i;
-            camera.render(240.0);
-            // camera.sync();
-        }
+        // for i in 512..1024 {
+        //     camera.y = i;
+        //     camera.render(240.0);
+        //     // camera.sync();
+        // }
     }
     // camera.render(240.0);
 }

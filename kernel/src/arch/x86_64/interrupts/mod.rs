@@ -55,7 +55,7 @@ lazy_static! {
         idt.breakpoint.set_handler_fn(breakpoint_handler);
         idt.page_fault.set_handler_fn(page_fault_handler);
         idt.general_protection_fault.set_handler_fn(general_protection_fault_handler);
-        // idt.non_maskable_interrupt.set_handler_fn(empty_handler);
+        idt.non_maskable_interrupt.set_handler_fn(empty_handler);
         // idt.overflow.set_handler_fn(empty_handler);
         // idt.bound_range_exceeded.set_handler_fn(empty_handler);
         // idt.invalid_opcode.set_handler_fn(empty_handler);
