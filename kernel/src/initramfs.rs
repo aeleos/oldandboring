@@ -1,7 +1,7 @@
 //! This modules is responsible for reading the initramfs.
 
 use alloc::boxed::Box;
-use arch::{get_initramfs_length, get_initramfs_start};
+use arch::memory::{get_initramfs_length, get_initramfs_start};
 use core::{ptr, slice, str};
 use core::mem::size_of;
 use file_handle::{FileError, FileHandle, Result, SeekFrom};

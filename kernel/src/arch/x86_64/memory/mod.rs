@@ -107,7 +107,7 @@ pub fn get_kernel_end_address() -> PhysicalAddress {
 }
 
 /// Initializes the memory manager.
-pub fn init() {
+pub fn memory_init() {
     assert_has_not_been_called!("The x86_64 memory initialization should only be called once.");
 
     let physical_initramfs_start = ::boot::get_initramfs_start();

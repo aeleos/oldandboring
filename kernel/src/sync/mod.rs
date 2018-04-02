@@ -17,7 +17,7 @@ impl PreemptionState {
     /// Reads the current state of preemption.
     fn new() -> PreemptionState {
         PreemptionState {
-            interrupts_enabled: arch::interrupts_enabled(),
+            interrupts_enabled: arch::sync::interrupts_enabled(),
         }
     }
 
@@ -47,7 +47,7 @@ impl PreemptionState {
 /// Lightenes CPU load in spin locks.
 #[inline(always)]
 pub fn cpu_relax() {
-    arch::cpu_relax();
+    arch::sync::cpu_relax();
 }
 
 /// Halts the CPU.
@@ -56,7 +56,7 @@ pub fn cpu_relax() {
 /// - If preemption is disabled, the execution can never be returned.
 #[inline(always)]
 pub unsafe fn cpu_halt() {
-    arch::cpu_halt();
+    arch::sync::cpu_halt();
 }
 
 /// Disables preemption and returns the previous state.
@@ -66,7 +66,7 @@ pub unsafe fn cpu_halt() {
 pub unsafe fn disable_preemption() -> PreemptionState {
     let state = PreemptionState::new();
 
-    arch::disable_interrupts();
+    arch::sync::disable_interrupts();
 
     state
 }
@@ -78,7 +78,7 @@ pub unsafe fn disable_preemption() -> PreemptionState {
 /// state that
 /// was returned by the disable function should be restored.
 pub unsafe fn enable_preemption() {
-    arch::enable_interrupts();
+    arch::sync::enable_interrupts();
 }
 
 /// Reenables preemption to the saved state.

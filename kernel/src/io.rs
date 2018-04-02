@@ -1,12 +1,14 @@
 //! This module deals with all in-kernel IO.
 //!
 //! It handles all the IO that kernel code needs to perform.
-use drivers::serial;
+use arch::device::serial;
 
 /// Initializes all IO devices.
 pub fn init() {
     assert_has_not_been_called!("IO components should only be initialized once");
-    serial::init();
+    unsafe {
+        serial::init();
+    }
     if cfg!(target_arch = "x86_64") {
         ::arch::vga_buffer::init();
     }
@@ -37,7 +39,8 @@ macro_rules! print {
 #[macro_export]
 macro_rules! debug {
     ($($arg:tt)*) => ({
-        $crate::drivers::serial::print($crate::drivers::serial::Port::COM1, format_args!($($arg)*));
+        use core::fmt::Write;
+        $crate::arch::device::serial::COM1.lock().write_fmt(format_args!($($arg)*)).unwrap()
     });
 }
 
@@ -50,7 +53,8 @@ macro_rules! debugln {
 #[macro_export]
 macro_rules! panic_debug {
     ($($arg:tt)*) => ({
-        $crate::drivers::serial::print($crate::drivers::serial::Port::COM2, format_args!($($arg)*));
+        use core::fmt::Write;
+        $crate::arch::device::serial::COM2.lock().write_fmt(format_args!($($arg)*)).unwrap()
     });
 }
 

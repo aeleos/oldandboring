@@ -4,7 +4,7 @@ use super::{TCB, ThreadState};
 use super::tcb::SleepTimeSortedTCB;
 use alloc::binary_heap::BinaryHeap;
 use arch::schedule;
-use arch::switch_context;
+use arch::context::switch_context;
 use core::mem::swap;
 use sync::{disable_preemption, enable_preemption, restore_preemption_state};
 use sync::PreemptableMutex;

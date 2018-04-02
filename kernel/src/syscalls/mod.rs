@@ -1,6 +1,7 @@
 //! This module handles system calls.
 
 use arch::schedule;
+use arch;
 use elf;
 use memory::VirtualAddress;
 use multitasking::{get_current_process, CURRENT_THREAD, TCB};
@@ -25,8 +26,8 @@ pub fn syscall_handler(
         4 => sleep(arg1),
         5 => create_thread(arg1 as VirtualAddress, arg2, arg3, arg4, arg5, arg6),
         6 => kill_thread(),
-        7 => serial_char(arg1 as u8 as char),
-        8 => panic_char(arg1 as u8 as char),
+        7 => serial_char(arg1 as u8),
+        8 => panic_char(arg1 as u8),
         9 => register_kb_interrupt(arg1 as VirtualAddress, arg2),
         _ => unknown_syscall(num),
     }
@@ -37,13 +38,13 @@ fn print_char(character: char) -> i64 {
     0
 }
 
-fn serial_char(character: char) -> i64 {
-    debug!("{}", character);
+fn serial_char(character: u8) -> i64 {
+    arch::device::serial::COM1.lock().send(character);
     0
 }
 
-fn panic_char(character: char) -> i64 {
-    panic_debug!("{}", character);
+fn panic_char(character: u8) -> i64 {
+    arch::device::serial::COM2.lock().send(character);
     0
 }
 
@@ -124,8 +125,9 @@ fn create_thread(
 }
 
 fn register_kb_interrupt(start_address: VirtualAddress, arg1: u64) -> i64 {
+    use arch::interrupts::register_kb_interrupt;
     let pid = CURRENT_THREAD.lock().pid;
-    ::arch::register_kb_interrupt(pid, start_address, arg1);
+    register_kb_interrupt(pid, start_address, arg1);
     0
 }
 

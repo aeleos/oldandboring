@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="eac5dd6b-02b3-49bb-baeb-99efc6424093" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/init/src/video/raycaster/rustcaster.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel/src/arch/x86_64/device/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel/src/arch/x86_64/device/serial.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel/src/devices/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel/src/devices/uart_16550.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/boring-core/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/boring-core/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init/src/video/raycaster.rs" beforeDir="false" afterPath="$PROJECT_DIR$/init/src/video/raycaster/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/arch/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/arch/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/arch/x86_64/memory/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/arch/x86_64/memory/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/arch/x86_64/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/arch/x86_64/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/drivers/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/drivers/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/drivers/serial.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/initramfs.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/initramfs.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/io.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/io.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/memory/address_space.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/memory/address_space.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/memory/allocator/linked_list_allocator.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/memory/allocator/linked_list_allocator.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/memory/allocator/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/memory/allocator/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/memory/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/memory/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/multitasking/scheduler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/multitasking/scheduler.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/sync/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/sync/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/sync/time.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/sync/time.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/syscalls/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/syscalls/mod.rs" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="mod.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kernel/src/drivers/mod.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="8" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lib.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kernel/src/lib.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1908">
+              <caret line="106" column="8" selection-start-line="106" selection-end-line="107" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="io.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kernel/src/io.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1008">
+              <caret line="56" column="91" selection-start-line="56" selection-start-column="91" selection-end-line="56" selection-end-column="91" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mod.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kernel/src/arch/mod.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="serial.rs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/device/serial.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="54">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mod.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kernel/src/syscalls/mod.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="738">
+              <caret line="41" column="53" selection-start-line="41" selection-start-column="53" selection-end-line="41" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Rust File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>global</find>
+      <find>byte</find>
+      <find>dw</find>
+      <find>dd</find>
+      <find>dword</find>
+      <find>double</find>
+      <find>0b11</find>
+      <find>0b10000011</find>
+      <find>$</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>.word</replace>
+      <replace>.dword</replace>
+      <replace>.double</replace>
+      <replace>double</replace>
+      <replace>long</replace>
+      <replace>0x3</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/kernel/src/arch/x86_64/init</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/init/src/video/raycaster/mod.rs" />
+        <option value="$PROJECT_DIR$/init/src/lib.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/elf.rs" />
+        <option value="$PROJECT_DIR$/std/src/screen/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/grub.cfg" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/memory.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/multiboot_header.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/paging.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_error.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_init.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/checks.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/init.asm" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/checks.s" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/paging.s" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/memory.s" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_init.s" />
+        <option value="$PROJECT_DIR$/kernel/x86_64-unknown-none-gnu.json" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_error.s" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/init.s" />
+        <option value="$PROJECT_DIR$/kernel/Makefile" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/init/multiboot_header.s" />
+        <option value="$PROJECT_DIR$/build.rs" />
+        <option value="$PROJECT_DIR$/Cargo.toml" />
+        <option value="$PROJECT_DIR$/boring-core/src/lib.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/devices/uart_16550.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/device/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/boot/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/interrupts/ioapic.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/interrupts/lapic.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/initramfs.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/memory/allocator/linked_list_allocator.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/memory/allocator/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/memory/address_space.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/multitasking/scheduler.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/sync/time.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/memory/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/memory/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/sync/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/lib.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/drivers/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/syscalls/mod.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/io.rs" />
+        <option value="$PROJECT_DIR$/kernel/src/arch/x86_64/device/serial.rs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="347" />
+    <option name="y" value="-4" />
+    <option name="width" value="1400" />
+    <option name="height" value="993" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="boring-core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="boring-core" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="boring-core" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="io" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="arch" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="arch" type="462c0819:PsiDirectoryNode" />
+              <item name="x86_64" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="arch" type="462c0819:PsiDirectoryNode" />
+              <item name="x86_64" type="462c0819:PsiDirectoryNode" />
+              <item name="device" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="boot" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="devices" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="drivers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="interrupts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="sync" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="kernel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="syscalls" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="std" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BoringOS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BoringOS" type="462c0819:PsiDirectoryNode" />
+              <item name="std" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Makefile" />
+    <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/kernel" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Makefile.kvm">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="" workingDirectory="" arguments="clean">
+        <envs />
+      </makefile>
+    </configuration>
+    <configuration name="kvm" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="" workingDirectory="" arguments="kvm">
+        <envs />
+      </makefile>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <properties />
+      <listeners />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+    </configuration>
+    <list>
+      <item itemvalue="Makefile.kvm" />
+      <item itemvalue="Makefile.clean" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="eac5dd6b-02b3-49bb-baeb-99efc6424093" name="Default" comment="" />
+      <created>1521737444494</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1521737444494</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <layout>
+      <window_info anchor="right" id="Palette" order="5" />
+      <window_info anchor="bottom" id="TODO" order="10" />
+      <window_info anchor="right" id="Cargo" order="0" />
+      <window_info anchor="right" id="Palette&#9;" order="1" />
+      <window_info id="Image Layers" order="6" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.50242585" side_tool="true" visible="true" weight="0.32889345" />
+      <window_info anchor="right" id="Maven Projects" order="2" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49757412" weight="0.32889345" />
+      <window_info anchor="bottom" id="Version Control" order="2" />
+      <window_info anchor="bottom" id="Terminal" order="3" />
+      <window_info id="Capture Tool" order="0" />
+      <window_info id="Designer" order="1" />
+      <window_info content_ui="combo" id="Project" order="4" visible="true" weight="0.24959569" />
+      <window_info id="Structure" order="5" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="7" weight="0.25" />
+      <window_info id="UI Designer" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Messages" order="0" />
+      <window_info anchor="right" id="Commander" order="6" weight="0.4" />
+      <window_info anchor="bottom" id="Message" order="4" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.32924336" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/kernel/src/drivers/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/io.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1908">
+          <caret line="106" column="8" lean-forward="true" selection-start-line="106" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/drivers/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/syscalls/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="972">
+          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1584">
+          <caret line="88" column="32" selection-start-line="88" selection-start-column="32" selection-end-line="88" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/io.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/device/serial.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/device/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="15" selection-start-column="15" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/devices/uart_16550.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2142">
+          <caret line="121" column="14" selection-start-line="121" selection-start-column="14" selection-end-line="121" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="97" column="8" selection-start-line="97" selection-start-column="8" selection-end-line="97" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/Cargo.lock">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1449" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_init.s" />
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/init/early_error.s" />
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/init/multiboot_header.s" />
+    <entry file="file://$PROJECT_DIR$/init/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/x86_64-unknown-none-gnu.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/init/mod.rs" />
+    <entry file="file://$PROJECT_DIR$/build.rs" />
+    <entry file="file://$PROJECT_DIR$/init/src/video/raycaster/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Cargo.toml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="1" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/file_handle.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-548" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/boring-core/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/boot/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/memory/paging/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3770" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/initramfs.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/memory/allocator/linked_list_allocator.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/memory/allocator/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="16" selection-start-line="6" selection-start-column="16" selection-end-line="6" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/context.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2402" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/multitasking/scheduler.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-162">
+          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/interrupts/ioapic.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2906">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/interrupts/lapic.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6362">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/memory/address_space.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/sync.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="58" column="4" selection-start-line="58" selection-start-column="4" selection-end-line="58" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/sync/time.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/memory/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="109" column="14" selection-start-line="109" selection-start-column="14" selection-end-line="109" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/memory/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="85" column="17" selection-start-line="85" selection-start-column="17" selection-end-line="85" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/sync/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="55" column="54" selection-start-line="55" selection-start-column="54" selection-end-line="55" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/vga_buffer.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-486" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="125" column="8" selection-start-line="125" selection-start-column="8" selection-end-line="125" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/cpuio.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="14" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/drivers/serial.rs" />
+    <entry file="file://$PROJECT_DIR$/kernel/src/interrupts/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-530" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/devices/uart_16550.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2142">
+          <caret line="121" column="14" selection-start-line="121" selection-start-column="14" selection-end-line="121" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/device/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="15" selection-start-column="15" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1908">
+          <caret line="106" column="8" selection-start-line="106" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/drivers/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/syscalls/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="41" column="53" selection-start-line="41" selection-start-column="53" selection-end-line="41" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/io.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1008">
+          <caret line="56" column="91" selection-start-line="56" selection-start-column="91" selection-end-line="56" selection-end-column="91" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kernel/src/arch/x86_64/device/serial.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

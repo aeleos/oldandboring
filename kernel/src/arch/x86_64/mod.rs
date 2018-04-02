@@ -7,8 +7,9 @@ pub mod memory;
 pub mod sync;
 pub mod interrupts;
 pub mod context;
-mod syscalls;
-mod gdt;
+pub mod syscalls;
+pub mod gdt;
+pub mod device;
 // pub mod video;
 
 pub use self::context::Context;
@@ -20,6 +21,7 @@ use raw_cpuid::CpuId;
 use x86_64::VirtualAddress;
 use x86_64::instructions::{rdmsr, wrmsr};
 use x86_64::registers::*;
+use core::fmt;
 
 /// The stack type used for the x86_64 architecture.
 pub const STACK_TYPE: StackType = StackType::FullDescending;
@@ -111,4 +113,28 @@ pub unsafe fn enter_first_thread() -> ! {
 /// This function starts a scheduling operation.
 pub fn schedule() {
     issue_self_interrupt(SCHEDULE_INTERRUPT_NUM);
+}
+
+
+/// Writes the formatted arguments.
+///
+/// This takes arguments as dictated by `core::fmt` and prints the to the
+/// screen using the printing method relevant for the current architecture.
+pub fn write_fmt(args: fmt::Arguments) {
+    if cfg!(target_arch = "x86_64") {
+        use core::fmt::Write;
+        vga_buffer::WRITER.lock().write_fmt(args).unwrap();
+    }
+}
+
+/// Sets the state of being interruptable to the given state.
+///
+/// # Safety
+/// - Don't use this function directly, rather use the sync module.
+pub unsafe fn set_interrupt_state(state: bool) {
+    if state {
+        sync::enable_interrupts();
+    } else {
+        sync::disable_interrupts();
+    }
 }

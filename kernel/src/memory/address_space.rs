@@ -3,7 +3,7 @@
 use super::{PageFlags, PhysicalAddress, VirtualAddress};
 use alloc::Vec;
 use alloc::boxed::Box;
-use arch::{idle_address_space_manager, new_address_space_manager};
+use arch::memory::{idle_address_space_manager, new_address_space_manager};
 use core::mem::size_of_val;
 use core::slice;
 use memory::{is_userspace_address, PAGE_SIZE};

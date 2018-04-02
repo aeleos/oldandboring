@@ -32,6 +32,7 @@ extern crate lazy_static;
 extern crate multiboot2;
 #[macro_use]
 extern crate once;
+extern crate boring_core;
 extern crate raw_cpuid;
 #[allow(unused_extern_crates)]
 extern crate rlibc;
@@ -45,16 +46,17 @@ mod macros;
 mod io;
 mod arch;
 mod boot;
-mod sync;
-mod memory;
-mod multitasking;
-mod syscalls;
-mod interrupts;
-mod initramfs;
+mod cpuio;
+mod devices;
+mod drivers;
 mod elf;
 mod file_handle;
-mod drivers;
-mod cpuio;
+mod initramfs;
+mod interrupts;
+mod memory;
+mod multitasking;
+mod sync;
+mod syscalls;
 // mod video;
 
 /// The name of the operating system.
@@ -99,7 +101,7 @@ pub extern "C" fn main(magic_number: u32, information_structure_address: usize) 
     );
     debugln!(
         "The available amount of memory is {}MiB.",
-        arch::get_free_memory_size() / 1024 / 1024
+        arch::memory::get_free_memory_size() / 1024 / 1024
     );
 
     // video::voxelspace::test();

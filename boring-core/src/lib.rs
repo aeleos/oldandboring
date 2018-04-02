@@ -2,7 +2,7 @@
 #![no_std]
 #![allow(dead_code)]
 
-mod io;
+pub mod io;
 
 #[cfg(test)]
 mod tests {

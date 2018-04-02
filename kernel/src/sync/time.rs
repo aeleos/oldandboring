@@ -1,6 +1,6 @@
 //! Handles time related functionality.
 
-use arch::get_current_timestamp;
+use arch::sync::get_current_timestamp;
 use core::fmt;
 
 /// Represents a unit of time.
